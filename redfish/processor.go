@@ -6,49 +6,39 @@ package redfish
 
 import (
 	"encoding/json"
-	"strconv"
+	"reflect"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
-// FpgaInterfaceType is
-type FpgaInterfaceType string
+// BaseSpeedPriorityState is
+type BaseSpeedPriorityState string
 
 const (
-
-	// QPIFpgaInterfaceType The Intel QuickPath Interconnect.
-	QPIFpgaInterfaceType FpgaInterfaceType = "QPI"
-	// UPIFpgaInterfaceType The Intel UltraPath Interconnect.
-	UPIFpgaInterfaceType FpgaInterfaceType = "UPI"
-	// PCIeFpgaInterfaceType A PCI Express interface.
-	PCIeFpgaInterfaceType FpgaInterfaceType = "PCIe"
-	// EthernetFpgaInterfaceType An Ethernet interface.
-	EthernetFpgaInterfaceType FpgaInterfaceType = "Ethernet"
-	// OEMFpgaInterfaceType An OEM defined interface.
-	OEMFpgaInterfaceType FpgaInterfaceType = "OEM"
+	// EnabledBaseSpeedPriorityState Base speed priority is enabled.
+	EnabledBaseSpeedPriorityState BaseSpeedPriorityState = "Enabled"
+	// DisabledBaseSpeedPriorityState Base speed priority is disabled.
+	DisabledBaseSpeedPriorityState BaseSpeedPriorityState = "Disabled"
 )
 
-// FpgaType is The FPGA type.
+// FpgaType is
 type FpgaType string
 
 const (
-
-	// IntegratedFpgaType The FPGA device integrated with other processor in
-	// the single chip.
+	// IntegratedFpgaType The FPGA device integrated with other processor in the single chip.
 	IntegratedFpgaType FpgaType = "Integrated"
 	// DiscreteFpgaType The discrete FPGA device.
 	DiscreteFpgaType FpgaType = "Discrete"
 )
 
-// InstructionSet is the process instruction set used.
+// InstructionSet is
 type InstructionSet string
 
 const (
-
-	// X86InstructionSet x86 32-bit.
-	X86InstructionSet InstructionSet = "x86"
-	// X86_64InstructionSet x86 64-bit.
-	X8664InstructionSet InstructionSet = "x86-64"
+	// x86InstructionSet x86 32-bit.
+	x86InstructionSet InstructionSet = "x86"
+	// x8664InstructionSet x86 64-bit.
+	x8664InstructionSet InstructionSet = "x86-64"
 	// IA64InstructionSet Intel IA-64.
 	IA64InstructionSet InstructionSet = "IA-64"
 	// ARMA32InstructionSet ARM 32-bit.
@@ -65,13 +55,12 @@ const (
 	OEMInstructionSet InstructionSet = "OEM"
 )
 
-// ProcessorArchitecture is processor architecture type.
+// ProcessorArchitecture is
 type ProcessorArchitecture string
 
 const (
-
-	// X86ProcessorArchitecture x86 or x86-64.
-	X86ProcessorArchitecture ProcessorArchitecture = "x86"
+	// x86ProcessorArchitecture x86 or x86-64.
+	x86ProcessorArchitecture ProcessorArchitecture = "x86"
 	// IA64ProcessorArchitecture Intel Itanium.
 	IA64ProcessorArchitecture ProcessorArchitecture = "IA-64"
 	// ARMProcessorArchitecture ARM.
@@ -88,7 +77,6 @@ const (
 type ProcessorMemoryType string
 
 const (
-
 	// L1CacheProcessorMemoryType L1 cache.
 	L1CacheProcessorMemoryType ProcessorMemoryType = "L1Cache"
 	// L2CacheProcessorMemoryType L2 cache.
@@ -105,8 +93,7 @@ const (
 	L7CacheProcessorMemoryType ProcessorMemoryType = "L7Cache"
 	// HBM1ProcessorMemoryType High Bandwidth Memory.
 	HBM1ProcessorMemoryType ProcessorMemoryType = "HBM1"
-	// HBM2ProcessorMemoryType The second generation of High Bandwidth
-	// Memory.
+	// HBM2ProcessorMemoryType The second generation of High Bandwidth Memory.
 	HBM2ProcessorMemoryType ProcessorMemoryType = "HBM2"
 	// HBM3ProcessorMemoryType The third generation of High Bandwidth Memory.
 	HBM3ProcessorMemoryType ProcessorMemoryType = "HBM3"
@@ -114,38 +101,27 @@ const (
 	SGRAMProcessorMemoryType ProcessorMemoryType = "SGRAM"
 	// GDDRProcessorMemoryType Synchronous graphics random-access memory.
 	GDDRProcessorMemoryType ProcessorMemoryType = "GDDR"
-	// GDDR2ProcessorMemoryType Double data rate type two synchronous
-	// graphics random-access memory.
+	// GDDR2ProcessorMemoryType Double data rate type two synchronous graphics random-access memory.
 	GDDR2ProcessorMemoryType ProcessorMemoryType = "GDDR2"
-	// GDDR3ProcessorMemoryType Double data rate type three synchronous
-	// graphics random-access memory.
+	// GDDR3ProcessorMemoryType Double data rate type three synchronous graphics random-access memory.
 	GDDR3ProcessorMemoryType ProcessorMemoryType = "GDDR3"
-	// GDDR4ProcessorMemoryType Double data rate type four synchronous
-	// graphics random-access memory.
+	// GDDR4ProcessorMemoryType Double data rate type four synchronous graphics random-access memory.
 	GDDR4ProcessorMemoryType ProcessorMemoryType = "GDDR4"
-	// GDDR5ProcessorMemoryType Double data rate type five synchronous
-	// graphics random-access memory.
+	// GDDR5ProcessorMemoryType Double data rate type five synchronous graphics random-access memory.
 	GDDR5ProcessorMemoryType ProcessorMemoryType = "GDDR5"
-	// GDDR5XProcessorMemoryType Double data rate type five synchronous
-	// graphics random-access memory.
+	// GDDR5XProcessorMemoryType Double data rate type five X synchronous graphics random-access memory.
 	GDDR5XProcessorMemoryType ProcessorMemoryType = "GDDR5X"
-	// GDDR6ProcessorMemoryType Double data rate type five synchronous
-	// graphics random-access memory.
+	// GDDR6ProcessorMemoryType Double data rate type six synchronous graphics random-access memory.
 	GDDR6ProcessorMemoryType ProcessorMemoryType = "GDDR6"
-	// DDRProcessorMemoryType Double data rate synchronous dynamic random-
-	// access memory.
+	// DDRProcessorMemoryType Double data rate synchronous dynamic random-access memory.
 	DDRProcessorMemoryType ProcessorMemoryType = "DDR"
-	// DDR2ProcessorMemoryType Double data rate type two synchronous dynamic
-	// random-access memory.
+	// DDR2ProcessorMemoryType Double data rate type two synchronous dynamic random-access memory.
 	DDR2ProcessorMemoryType ProcessorMemoryType = "DDR2"
-	// DDR3ProcessorMemoryType Double data rate type three synchronous
-	// dynamic random-access memory.
+	// DDR3ProcessorMemoryType Double data rate type three synchronous dynamic random-access memory.
 	DDR3ProcessorMemoryType ProcessorMemoryType = "DDR3"
-	// DDR4ProcessorMemoryType Double data rate type four synchronous dynamic
-	// random-access memory.
+	// DDR4ProcessorMemoryType Double data rate type four synchronous dynamic random-access memory.
 	DDR4ProcessorMemoryType ProcessorMemoryType = "DDR4"
-	// DDR5ProcessorMemoryType Double data rate type five synchronous dynamic
-	// random-access memory.
+	// DDR5ProcessorMemoryType Double data rate type five synchronous dynamic random-access memory.
 	DDR5ProcessorMemoryType ProcessorMemoryType = "DDR5"
 	// SDRAMProcessorMemoryType Synchronous dynamic random-access memory.
 	SDRAMProcessorMemoryType ProcessorMemoryType = "SDRAM"
@@ -157,285 +133,512 @@ const (
 	OEMProcessorMemoryType ProcessorMemoryType = "OEM"
 )
 
-// ProcessorType is the processor type.
+// ProcessorType is
 type ProcessorType string
 
 const (
-
-	// CPUProcessorType A Central Processing Unit.
+	// CPUProcessorType A CPU.
 	CPUProcessorType ProcessorType = "CPU"
-	// GPUProcessorType A Graphics Processing Unit.
+	// GPUProcessorType A GPU.
 	GPUProcessorType ProcessorType = "GPU"
-	// FPGAProcessorType A Field Programmable Gate Array.
+	// FPGAProcessorType An FPGA.
 	FPGAProcessorType ProcessorType = "FPGA"
-	// DSPProcessorType A Digital Signal Processor.
+	// DSPProcessorType A DSP.
 	DSPProcessorType ProcessorType = "DSP"
-	// AcceleratorProcessorType An Accelerator.
+	// AcceleratorProcessorType An accelerator.
 	AcceleratorProcessorType ProcessorType = "Accelerator"
-	// CoreProcessorType A Core in a Processor.
+	// CoreProcessorType A core in a processor.
 	CoreProcessorType ProcessorType = "Core"
-	// ThreadProcessorType A Thread in a Processor.
+	// ThreadProcessorType A thread in a processor.
 	ThreadProcessorType ProcessorType = "Thread"
-	// OEMProcessorType An OEM-defined Processing Unit.
+	// OEMProcessorType An OEM-defined processing unit.
 	OEMProcessorType ProcessorType = "OEM"
 )
 
-// FPGA shall contain the properties of the FPGA device represented by a
-// Processor.
+// SystemInterfaceType is
+type SystemInterfaceType string
+
+const (
+	// QPISystemInterfaceType The Intel QuickPath Interconnect.
+	QPISystemInterfaceType SystemInterfaceType = "QPI"
+	// UPISystemInterfaceType The Intel UltraPath Interconnect.
+	UPISystemInterfaceType SystemInterfaceType = "UPI"
+	// PCIeSystemInterfaceType A PCI Express interface.
+	PCIeSystemInterfaceType SystemInterfaceType = "PCIe"
+	// EthernetSystemInterfaceType An Ethernet interface.
+	EthernetSystemInterfaceType SystemInterfaceType = "Ethernet"
+	// AMBASystemInterfaceType The Arm Advanced Microcontroller Bus Architecture interface.
+	AMBASystemInterfaceType SystemInterfaceType = "AMBA"
+	// CCIXSystemInterfaceType The Cache Coherent Interconnect for Accelerators interface.
+	CCIXSystemInterfaceType SystemInterfaceType = "CCIX"
+	// CXLSystemInterfaceType The Compute Express Link interface.
+	CXLSystemInterfaceType SystemInterfaceType = "CXL"
+	// OEMSystemInterfaceType An OEM-defined interface.
+	OEMSystemInterfaceType SystemInterfaceType = "OEM"
+)
+
+// ThrottleCause is
+type ThrottleCause string
+
+const (
+	// PowerLimitThrottleCause The cause of the processor being throttled is a power limit.
+	PowerLimitThrottleCause ThrottleCause = "PowerLimit"
+	// ThermalLimitThrottleCause The cause of the processor being throttled is a thermal limit.
+	ThermalLimitThrottleCause ThrottleCause = "ThermalLimit"
+	// ClockLimitThrottleCause The cause of the processor being throttled is a clock limit.
+	ClockLimitThrottleCause ThrottleCause = "ClockLimit"
+	// UnknownThrottleCause The cause of the processor being throttled is not known.
+	UnknownThrottleCause ThrottleCause = "Unknown"
+	// OEMThrottleCause The cause of the processor being throttled is OEM-specific.
+	OEMThrottleCause ThrottleCause = "OEM"
+)
+
+// TurboState is
+type TurboState string
+
+const (
+	// EnabledTurboState Turbo is enabled.
+	EnabledTurboState TurboState = "Enabled"
+	// DisabledTurboState Turbo is disabled.
+	DisabledTurboState TurboState = "Disabled"
+)
+
+// EthernetInterface shall contain the definition for an Ethernet interface for a Redfish implementation.
+type EthernetInterface struct {
+	// MaxLanes shall contain the maximum number of lanes supported by this interface.
+	MaxLanes int
+	// MaxSpeedMbps shall contain the maximum speed supported by this interface.
+	MaxSpeedMbps int
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+}
+
+// UnmarshalJSON unmarshals a EthernetInterface object from the raw JSON.
+func (ethernetinterface *EthernetInterface) UnmarshalJSON(b []byte) error {
+	type temp EthernetInterface
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*ethernetinterface = EthernetInterface(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// FPGA shall contain the properties of the FPGA device represented by a processor.
 type FPGA struct {
-	// ExternalInterfaces shall be an array of objects that describe the
-	// external connectivity of the FPGA.
-	ExternalInterfaces []FpgaInterface
-	// FirmwareID shall contain a string describing the FPGA firmware
-	// identifier.
-	FirmwareID string `json:"FirmwareId"`
-	// FirmwareManufacturer shall contain a string describing the FPGA firmware
-	// manufacturer.
+	// ExternalInterfaces shall contain an array of objects that describe the external connectivity of the FPGA.
+	ExternalInterfaces []ProcessorInterface
+	// FirmwareId shall contain a string describing the FPGA firmware identifier.
+	FirmwareId string
+	// FirmwareManufacturer shall contain a string describing the FPGA firmware manufacturer.
 	FirmwareManufacturer string
-	// FirmwareVersion shall contain a string describing the FPGA firmware
-	// version.
-	FirmwareVersion string
-	// FpgaType shall be a type of the FPGA device.
-	FpgaType FpgaType
-	// HostInterface shall be an object that describes the connectivity to the
-	// host for system software to use.
-	HostInterface FpgaInterface
-	// Model shall be a model of the FPGA device.
+	// FpgaType shall contain a type of the FPGA device.
+	FpgaType string
+	// Model shall contain a model of the FPGA device.
 	Model string
-	// PCIeVirtualFunctions shall be an integer that describes the number of
-	// PCIe Virtual Functions configured within the FPGA.
-	PCIeVirtualFunctions int
-	// ProgrammableFromHost shall indicate
-	// whether the FPGA firmware can be reprogrammed from the host using
-	// system software. If set to false, system software shall not be able
-	// to program the FPGA firmware from the host interface. In either
-	// state, a management controller may be able to program the FPGA
-	// firmware using the sideband interface.
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PCIeVirtualFunctions shall contain an integer that describes the number of PCIe Virtual Functions configured
+	// within the FPGA.
+	PCIeVirtualFunctions string
+	// ProgrammableFromHost shall indicate whether the FPGA firmware can be reprogrammed from the host by using system
+	// software. If 'false', system software shall not be able to program the FPGA firmware from the system interface.
+	// In either state, a management controller may be able to program the FPGA firmware by using the sideband
+	// interface.
 	ProgrammableFromHost bool
-	// ReconfigurationSlots shall be an array
-	// of the structures describing the FPGA reconfiguration slots that can
-	// be programmed with the acceleration functions.
+	// ReconfigurationSlots shall contain an array of the structures that describe the FPGA reconfiguration slots that
+	// the acceleration functions can program.
 	ReconfigurationSlots []FpgaReconfigurationSlot
 }
 
-// FpgaInterface shall contain information about the interface to the FPGA.
-type FpgaInterface struct {
-	// Ethernet shall be an object the
-	// describes the Ethernet related information about this FPGA interface.
-	Ethernet EthernetInterface
-	// InterfaceType shall be an enum that
-	// describes the type of interface to the FPGA.
-	InterfaceType FpgaInterfaceType
-	// pcie shall be an object the describes the PCI-e related information about
-	// this FPGA interface. TODO: Get link to PCIeInterface.
-	// pcie string
+// UnmarshalJSON unmarshals a FPGA object from the raw JSON.
+func (fpga *FPGA) UnmarshalJSON(b []byte) error {
+	type temp FPGA
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*fpga = FPGA(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// FpgaReconfigurationSlot shall contain information about the FPGA
-// reconfiguration slot.
+// FpgaReconfigurationSlot shall contain information about the FPGA reconfiguration slot.
 type FpgaReconfigurationSlot struct {
-	// AccelerationFunction shall be a reference to the acceleration function
-	// resources provided by the code programmed into a reconfiguration slot and
-	// shall reference a resource of type AccelerationFunction.
-	// TODO: Get link to resource.
-	// accelerationFunction string
-	// ProgrammableFromHost shall indicate
-	// whether the reconfiguration slot can be reprogrammed from the host
-	// using system software. If set to false, system software shall not be
-	// able to program the reconfiguration slot from the host interface. In
-	// either state, a management controller may be able to program the
-	// reconfiguration slot using the sideband interface.
+	// AccelerationFunction shall contain a link to a resource of type AccelerationFunction that represents the code
+	// programmed into this reconfiguration slot.
+	AccelerationFunction string
+	// ProgrammableFromHost shall indicate whether the reconfiguration slot can be reprogrammed from the host by using
+	// system software. If 'false', system software shall not be able to program the reconfiguration slot from the
+	// system interface. In either state, a management controller may be able to program the reconfiguration slot by
+	// using the sideband interface.
 	ProgrammableFromHost bool
-	// SlotID shall be the FPGA reconfiguration slot identifier.
-	SlotID string `json:"SlotId"`
-	// UUID is used to contain a universal unique identifier number for the
-	// reconfiguration slot.
+	// SlotId shall contain the FPGA reconfiguration slot identifier.
+	SlotId string
+	// UUID shall contain a universal unique identifier number for the reconfiguration slot.
 	UUID string
 }
 
-// Processor is used to represent a single processor contained within a
-// system.
+// UnmarshalJSON unmarshals a FpgaReconfigurationSlot object from the raw JSON.
+func (fpgareconfigurationslot *FpgaReconfigurationSlot) UnmarshalJSON(b []byte) error {
+	type temp FpgaReconfigurationSlot
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*fpgareconfigurationslot = FpgaReconfigurationSlot(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// Chassis shall contain a link to a resource of type Chassis that represents the physical container associated
+	// with this processor.
+	Chassis string
+	// ConnectedProcessors shall contain an array of links to resources of type Processor that are directly connected
+	// to this processor.
+	ConnectedProcessors []Processor
+	// ConnectedProcessors@odata.count
+	ConnectedProcessorsCount int `json:"ConnectedProcessors@odata.count"`
+	// Endpoints shall contain an array of links to resources of type Endpoint that represent endpoints associated with
+	// this processor.
+	Endpoints []Endpoint
+	// Endpoints@odata.count
+	EndpointsCount int `json:"Endpoints@odata.count"`
+	// GraphicsController shall contain a link to resource of type GraphicsController that is associated with this
+	// processor.
+	GraphicsController GraphicsController
+	// Memory shall contain an array of links to resources of type Memory that are associated with this processor.
+	Memory []Memory
+	// Memory@odata.count
+	MemoryCount int `json:"Memory@odata.count"`
+	// NetworkDeviceFunctions shall contain an array of links to resources of type NetworkDeviceFunction that represent
+	// the network device functions to which this processor performs offload computation, such as with a SmartNIC.
+	NetworkDeviceFunctions []NetworkDeviceFunction
+	// NetworkDeviceFunctions@odata.count
+	NetworkDeviceFunctionsCount int `json:"NetworkDeviceFunctions@odata.count"`
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PCIeDevice shall contain a link to a resource of type PCIeDevice that represents the PCIe device associated with
+	// this processor.
+	PCIeDevice string
+	// PCIeFunctions shall contain an array of links to resources of type PCIeFunction that represent the PCIe
+	// functions associated with this processor.
+	PCIeFunctions []PCIeFunction
+	// PCIeFunctions@odata.count
+	PCIeFunctionsCount int `json:"PCIeFunctions@odata.count"`
+}
+
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// MemorySummary shall contain properties that describe the summary of all memory that are associated with a
+// processor.
+type MemorySummary struct {
+	// ECCModeEnabled shall indicate if memory ECC mode is enabled for this processor. This value shall not affect
+	// system memory ECC mode.
+	ECCModeEnabled bool
+	// Metrics shall contain a link to a resource of type MemoryMetrics that contains the metrics associated with all
+	// memory of this processor.
+	Metrics string
+	// TotalCacheSizeMiB shall contain the total size of cache memory of this processor.
+	TotalCacheSizeMiB int
+	// TotalMemorySizeMiB shall contain the total size of non-cache, volatile memory attached to this processor. This
+	// value indicates the size of memory directly attached or with strong affinity to this processor, not the total
+	// memory accessible by the processor. This property shall not be present for implementations where all processors
+	// have equal memory performance or access characteristics, such as hop count, for all system memory.
+	TotalMemorySizeMiB int
+}
+
+// UnmarshalJSON unmarshals a MemorySummary object from the raw JSON.
+func (memorysummary *MemorySummary) UnmarshalJSON(b []byte) error {
+	type temp MemorySummary
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*memorysummary = MemorySummary(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
+}
+
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Processor shall represent a single processor that a system contains. A processor includes both performance
+// characteristics, clock speed, architecture, core count, and so on, and compatibility, such as the CPU ID
+// instruction results.
 type Processor struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-	// accelerationFunctions shall be a link to
-	// a collection of type AccelerationFunctionCollection.
-	accelerationFunctions string
-	// Actions is The Actions property shall contain the available actions
-	// for this resource.
+	// AccelerationFunctions shall contain a link to a resource collection of type AccelerationFunctionCollection.
+	AccelerationFunctions string
+	// Actions shall contain the available actions for this resource.
 	Actions string
-	// Assembly shall be a link to a resource
-	// of type Assembly.
-	assembly string
+	// AdditionalFirmwareVersions shall contain the additional firmware versions of the processor.
+	AdditionalFirmwareVersions string
+	// AppliedOperatingConfig shall contain a link to a resource of type OperatingConfig that specifies the
+	// configuration is applied to this processor.
+	AppliedOperatingConfig string
+	// Assembly shall contain a link to a resource of type Assembly.
+	Assembly string
+	// BaseSpeedMHz shall contain the base (nominal) clock speed of the processor in MHz.
+	BaseSpeedMHz int
+	// BaseSpeedPriorityState shall contain the state of the base frequency settings of the operating configuration
+	// applied to this processor.
+	BaseSpeedPriorityState BaseSpeedPriorityState
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
 	// Description provides a description of this resource.
 	Description string
-	// FPGA shall be an object containing
-	// properties specific for Processors of type FPGA.
-	FPGA FPGA
-	// InstructionSet shall contain the string which
-	// identifies the instruction set of the processor contained in this
+	// Enabled shall indicate if this processor is enabled.
+	Enabled string
+	// EnvironmentMetrics shall contain a link to a resource of type EnvironmentMetrics that specifies the environment
+	// metrics for this processor.
+	EnvironmentMetrics string
+	// FPGA shall contain an object containing properties for processors of type FPGA.
+	FPGA string
+	// Family shall contain a string that identifies the processor family, as specified by the combination of the
+	// EffectiveFamily and EffectiveModel properties.
+	Family string
+	// FirmwareVersion shall contain a string describing the firmware version of the processor as provided by the
+	// manufacturer.
+	FirmwareVersion string
+	// HighSpeedCoreIDs shall contain an array of core identifiers corresponding to the cores that have been configured
+	// with the higher clock speed from the operating configuration applied to this processor.
+	HighSpeedCoreIDs []string
+	// InstructionSet shall contain the string that identifies the instruction set of the processor contained in this
 	// socket.
 	InstructionSet InstructionSet
-	// Links is The Links property, as described by the Redfish
-	// Specification, shall contain references to resources that are related
-	// to, but not contained by (subordinate to), this resource.
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
 	Links string
-	// Location shall contain location information of the
-	// associated processor.
-	Location common.Location
-	// Manufacturer shall contain a string which identifies
-	// the manufacturer of the processor.
+	// Location shall contain location information of the associated processor.
+	Location string
+	// LocationIndicatorActive shall contain the state of the indicator used to physically identify or locate this
+	// resource. A write to this property shall update the value of IndicatorLED in this resource, if supported, to
+	// reflect the implementation of the locating function.
+	LocationIndicatorActive bool
+	// Manufacturer shall contain a string that identifies the manufacturer of the processor.
 	Manufacturer string
-	// MaxSpeedMHz shall indicate the maximum rated clock
-	// speed of the processor in MHz.
-	MaxSpeedMHz float32
-	// MaxTDPWatts shall be the maximum Thermal
-	// Design Power (TDP) in watts.
+	// MaxSpeedMHz shall indicate the maximum rated clock speed of the processor in MHz.
+	MaxSpeedMHz int
+	// MaxTDPWatts shall contain the maximum Thermal Design Power (TDP) in watts.
 	MaxTDPWatts int
-	// Metrics shall be a reference to the Metrics
-	// associated with this Processor.
-	metrics string
-	// Model shall indicate the model information as
-	// provided by the manufacturer of this processor.
+	// MemorySummary shall contain properties that describe the summary of all memory that are associated with this
+	// processor.
+	MemorySummary string
+	// Metrics shall contain a link to a resource of type ProcessorMetrics that contains the metrics associated with
+	// this processor.
+	Metrics string
+	// MinSpeedMHz shall indicate the minimum rated clock speed of the processor in MHz.
+	MinSpeedMHz int
+	// Model shall indicate the model information as provided by the manufacturer of this processor.
 	Model string
-	// ProcessorArchitecture shall contain the string which
-	// identifies the architecture of the processor contained in this Socket.
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// OperatingConfigs shall contain a link to a resource collection of type OperatingConfigCollection.
+	OperatingConfigs string
+	// OperatingSpeedMHz shall contain the operating speed of the processor in MHz. The operating speed of the
+	// processor may change more frequently than the manager is able to monitor.
+	OperatingSpeedMHz int
+	// OperatingSpeedRangeMHz shall contain the operating speed control, measured in megahertz units, for this
+	// resource. The value of the DataSourceUri property, if present, shall reference a resource of type Control with
+	// the ControlType property containing the value of 'FrequencyMHz'.
+	OperatingSpeedRangeMHz ControlRangeExcerpt
+	// PartNumber shall contain a part number assigned by the organization that is responsible for producing or
+	// manufacturing the processor.
+	PartNumber string
+	// Ports shall contain a link to a resource collection of type PortCollection. It shall contain the interconnect
+	// ports of this processor. It shall not contain ports of for GraphicsController resources, USBController
+	// resources, or other adapter-related type of resources.
+	Ports string
+	// ProcessorArchitecture shall contain the string that identifies the architecture of the processor contained in
+	// this socket.
 	ProcessorArchitecture ProcessorArchitecture
-	// ProcessorID shall contain identification information for this processor.
-	ProcessorID ProcessorID `json:"ProcessorId"`
-	// ProcessorMemory shall be the memory
-	// directly attached or integrated within this Processor.
-	processorMemory []string
-	// ProcessorType shall contain the string which
-	// identifies the type of processor contained in this Socket.
+	// ProcessorId shall contain identification information for this processor.
+	ProcessorId string
+	// ProcessorIndex shall contain the zero-based index of the processor, indexed within the next unit of containment.
+	// The value of this property shall match the ordering in the operating system topology interfaces, with offset
+	// adjustments, if needed.
+	ProcessorIndex int
+	// ProcessorMemory shall contain the memory directly attached or integrated within this processor.
+	ProcessorMemory []ProcessorMemory
+	// ProcessorType shall contain the string that identifies the type of processor contained in this socket.
 	ProcessorType ProcessorType
-	// Socket shall contain the string which identifies the
-	// physical location or socket of the processor.
+	// Replaceable shall indicate whether this component can be independently replaced as allowed by the vendor's
+	// replacement policy. A value of 'false' indicates the component needs to be replaced by policy, as part of
+	// another component. If the 'LocationType' property of this component contains 'Embedded', this property shall
+	// contain 'false'.
+	Replaceable bool
+	// SerialNumber shall contain a manufacturer-allocated number that identifies the processor.
+	SerialNumber string
+	// Socket shall contain the string that identifies the physical location or socket of the processor.
 	Socket string
-	// Status shall contain any status or health properties
-	// of the resource.
+	// SparePartNumber shall contain the spare part number of the processor.
+	SparePartNumber string
+	// SpeedLimitMHz shall contain the clock limit of the processor in MHz. This value shall be within the range of
+	// MinSpeedMHz and MaxSpeedMHz as provided by the manufacturer of this processor.
+	SpeedLimitMHz int
+	// SpeedLocked shall indicate whether the clock speed of the processor is fixed, where a value 'true' shall
+	// indicate that the clock speed is fixed at the value specified in the SpeedLimitMHz property.
+	SpeedLocked bool
+	// Status shall contain any status or health properties of the resource.
 	Status common.Status
-	// SubProcessors shall be a link to a
-	// collection of type ProcessorCollection.
+	// SubProcessors shall contain a link to a resource collection of type ProcessorCollection.
 	SubProcessors string
-	// TDPWatts shall be the nominal Thermal
-	// Design Power (TDP) in watts.
+	// SystemInterface shall contain an object that describes the connectivity between the host system and the
+	// processor.
+	SystemInterface string
+	// TDPWatts shall contain the nominal Thermal Design Power (TDP) in watts.
 	TDPWatts int
-	// TotalCores shall indicate the total count of
-	// independent processor cores contained within this processor.
+	// ThrottleCauses shall contain the causes of the processor being throttled. If Throttled contains 'false', this
+	// property shall contain an empty array.
+	ThrottleCauses []ThrottleCause
+	// Throttled shall indicate whether the processor is throttled.
+	Throttled bool
+	// TotalCores shall indicate the total count of independent processor cores contained within this processor.
 	TotalCores int
-	// TotalEnabledCores shall indicate the total count of
-	// enabled independent processor cores contained within this processor.
+	// TotalEnabledCores shall indicate the total count of enabled independent processor cores contained within this
+	// processor.
 	TotalEnabledCores int
-	// TotalThreads shall indicate the total count of
-	// independent execution threads supported by this processor.
+	// TotalThreads shall indicate the total count of independent execution threads that this processor supports.
 	TotalThreads int
-	// UUID is used to contain a universal unique identifier number for the
-	// processor. RFC4122 describes methods that can be used to create the
-	// value. The value should be considered to be opaque. Client software
-	// should only treat the overall value as a universally unique identifier
-	// and should not interpret any sub-fields within the UUID.
+	// TurboState shall contain the state of turbo for this processor.
+	TurboState TurboState
+	// UUID shall contain a universal unique identifier number for the processor. RFC4122 describes methods to use to
+	// create the value. The value should be considered to be opaque. Client software should only treat the overall
+	// value as a universally unique identifier and should not interpret any sub-fields within the UUID.
 	UUID string
-	// Chassis shall be a reference to a
-	// resource of type Chassis that represent the physical container
-	// associated with this Processor.
-	chassis string
-	// ConnectedProcessors shall be an array of
-	// references of type Processor that are directly connected to this
-	// Processor.
-	connectedProcessors []string
-	// ConnectedProcessors@odata.count is
-	ConnectedProcessorsCount int
-	// Endpoints shall be an array of
-	// references of type Endpoint that represent Endpoints associated with
-	// this Processor.
-	endpoints []string
-	// Endpoints@odata.count is
-	EndpointsCount int
-	// PCIeDevice shall be a reference of type
-	// PCIeDevice that represents the PCI-e Device associated with this
-	// Processor.
-	pcieDevice string
-	// PCIeFunctions shall be an array of
-	// references of type PCIeFunction that represent the PCI-e Functions
-	// associated with this Processor.
-	pcieFunctions []string
-	// PCIeFunctions@odata.count is
-	PCIeFunctionsCount int
+	// Version shall contain the hardware version of the processor as determined by the vendor or supplier.
+	Version string
+	// rawData holds the original serialized JSON so we can compare updates.
+	rawData []byte
 }
 
 // UnmarshalJSON unmarshals a Processor object from the raw JSON.
 func (processor *Processor) UnmarshalJSON(b []byte) error {
 	type temp Processor
-	type t1 struct {
+	var t struct {
 		temp
-		AccelerationFunctions common.Link
-		Assembly              common.Link
-		Metrics               common.Link
-		ProcessorMemory       common.Links
-		Links                 struct {
-			Chassis                  common.Link
-			ConnectedProcessors      common.Links
-			ConnectedProcessorsCount int `json:"ConnectedProcessors@odata.count"`
-			Endpoints                common.Links
-			EndpointsCount           int `json:"Endpoints@odata.count"`
-			PCIeDevice               common.Link
-			PCIeFunctions            common.Links
-			PCIeFunctionsCount       int `json:"PCIeFunctions@odata.count"`
-		}
 	}
-	var t t1
 
 	err := json.Unmarshal(b, &t)
 	if err != nil {
-		// Handle invalid data type returned for MaxSpeedMHz
-		var t2 struct {
-			t1
-			MaxSpeedMHz string
-		}
-		err2 := json.Unmarshal(b, &t2)
-
-		if err2 != nil {
-			// Return the original error
-			return err
-		}
-
-		// Extract the real Processor struct and replace its MaxSpeedMHz with
-		// the parsed string version
-		t = t2.t1
-		if t2.MaxSpeedMHz != "" {
-			bitSize := 32
-			mhz, err := strconv.ParseFloat(t2.MaxSpeedMHz, bitSize)
-			if err != nil {
-				t.MaxSpeedMHz = float32(mhz)
-			}
-		}
+		return err
 	}
 
 	*processor = Processor(t.temp)
 
 	// Extract the links to other entities for later
-	processor.accelerationFunctions = string(t.AccelerationFunctions)
-	processor.assembly = string(t.Assembly)
-	processor.chassis = string(t.Links.Chassis)
-	processor.processorMemory = t.ProcessorMemory.ToStrings()
-	processor.connectedProcessors = t.Links.ConnectedProcessors.ToStrings()
-	processor.ConnectedProcessorsCount = t.Links.ConnectedProcessorsCount
-	processor.endpoints = t.Links.Endpoints.ToStrings()
-	processor.EndpointsCount = t.Links.EndpointsCount
-	processor.pcieDevice = string(t.Links.PCIeDevice)
-	processor.pcieFunctions = t.Links.PCIeFunctions.ToStrings()
-	processor.PCIeFunctionsCount = t.Links.PCIeFunctionsCount
-	processor.metrics = string(t.Metrics)
+
+	// This is a read/write object, so we need to save the raw object data for later
+	processor.rawData = b
 
 	return nil
 }
 
-// GetProcessor will get a Processor instance from the system
+// Update commits updates to this object's properties to the running system.
+func (processor *Processor) Update() error {
+
+	// Get a representation of the object's original state so we can find what
+	// to update.
+	original := new(Processor)
+	original.UnmarshalJSON(processor.rawData)
+
+	readWriteFields := []string{
+		"AppliedOperatingConfig",
+		"Enabled",
+		"LocationIndicatorActive",
+		"OperatingSpeedRangeMHz",
+		"SpeedLimitMHz",
+		"SpeedLocked",
+	}
+
+	originalElement := reflect.ValueOf(original).Elem()
+	currentElement := reflect.ValueOf(processor).Elem()
+
+	return processor.Entity.Update(originalElement, currentElement, readWriteFields)
+}
+
+// GetProcessor will get a Processor instance from the service.
 func GetProcessor(c common.Client, uri string) (*Processor, error) {
 	resp, err := c.Get(uri)
 	if err != nil {
@@ -453,9 +656,14 @@ func GetProcessor(c common.Client, uri string) (*Processor, error) {
 	return &processor, nil
 }
 
-// ListReferencedProcessors gets the collection of Processor from a provided reference.
+// ListReferencedProcessors gets the collection of Processor from
+// a provided reference.
 func ListReferencedProcessors(c common.Client, link string) ([]*Processor, error) {
 	var result []*Processor
+	if link == "" {
+		return result, nil
+	}
+
 	links, err := common.GetCollection(c, link)
 	if err != nil {
 		return result, err
@@ -473,44 +681,111 @@ func ListReferencedProcessors(c common.Client, link string) ([]*Processor, error
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
+	}
+}
+
+// ProcessorId shall contain identification information for a processor.
+type ProcessorId struct {
+	// EffectiveFamily shall indicate the effective Family information as provided by the manufacturer of this
+	// processor.
+	EffectiveFamily string
+	// EffectiveModel shall indicate the effective Model information as provided by the manufacturer of this processor.
+	EffectiveModel string
+	// IdentificationRegisters shall contain the raw manufacturer-provided processor-specific identification registers
+	// of this processor's features.
+	IdentificationRegisters string
+	// MicrocodeInfo shall indicate the microcode information as provided by the manufacturer of this processor.
+	MicrocodeInfo string
+	// ProtectedIdentificationNumber shall contain the Protected Processor Identification Number (PPIN) for this
+	// processor.
+	ProtectedIdentificationNumber string
+	// Step shall indicate the Step or revision string information as provided by the manufacturer of this processor.
+	Step string
+	// VendorId shall indicate the vendor Identification string information as provided by the manufacturer of this
+	// processor.
+	VendorId string
+}
+
+// UnmarshalJSON unmarshals a ProcessorId object from the raw JSON.
+func (processorid *ProcessorId) UnmarshalJSON(b []byte) error {
+	type temp ProcessorId
+	var t struct {
+		temp
 	}
 
-	return result, collectionError
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*processorid = ProcessorId(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// ProcessorID shall contain identification information for a processor.
-type ProcessorID struct {
-	// EffectiveFamily shall indicate the effective Family
-	// information as provided by the manufacturer of this processor.
-	EffectiveFamily string
-	// EffectiveModel shall indicate the effective Model
-	// information as provided by the manufacturer of this processor.
-	EffectiveModel string
-	// IdentificationRegisters shall include the raw CPUID
-	// instruction output as provided by the manufacturer of this processor.
-	IdentificationRegisters string
-	// MicrocodeInfo shall indicate the Microcode
-	// Information as provided by the manufacturer of this processor.
-	MicrocodeInfo string
-	// Step shall indicate the Step or revision string
-	// information as provided by the manufacturer of this processor.
-	Step string
-	// VendorID shall indicate the Vendor Identification
-	// string information as provided by the manufacturer of this processor.
-	VendorID string `json:"VendorId"`
+// ProcessorInterface shall contain information about the system interface, or external connection, to the
+// processor.
+type ProcessorInterface struct {
+	// Ethernet shall contain an object the describes the Ethernet-related information for this interface.
+	Ethernet string
+	// InterfaceType shall contain an enumerated value that describes the type of interface between the system, or
+	// external connection, and the processor.
+	InterfaceType SystemInterfaceType
+	// PCIe shall contain an object the describes the PCIe-related information for this interface.
+	PCIe string
 }
 
-// ProcessorMemory shall contain information about memory
-// directly attached or integrated within a processor.
+// UnmarshalJSON unmarshals a ProcessorInterface object from the raw JSON.
+func (processorinterface *ProcessorInterface) UnmarshalJSON(b []byte) error {
+	type temp ProcessorInterface
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*processorinterface = ProcessorInterface(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// ProcessorMemory shall contain information about memory directly attached or integrated within a processor.
 type ProcessorMemory struct {
-	// CapacityMiB shall be the memory capacity in MiB.
+	// CapacityMiB shall contain the memory capacity in MiB.
 	CapacityMiB int
-	// IntegratedMemory shall be a boolean
-	// indicating whether this memory is integrated within the Processor.
-	// Otherwise it is discrete memory attached to the Processor.
+	// IntegratedMemory shall indicate whether this memory is integrated within the processor. Otherwise, it is
+	// discrete memory attached to the processor.
 	IntegratedMemory bool
-	// MemoryType shall be a type of the processor memory type.
+	// MemoryType shall contain a type of the processor memory type.
 	MemoryType ProcessorMemoryType
-	// SpeedMHz shall be the operating speed of the memory in MHz.
+	// SpeedMHz shall contain the operating speed of the memory in MHz.
 	SpeedMHz int
+}
+
+// UnmarshalJSON unmarshals a ProcessorMemory object from the raw JSON.
+func (processormemory *ProcessorMemory) UnmarshalJSON(b []byte) error {
+	type temp ProcessorMemory
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*processormemory = ProcessorMemory(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }

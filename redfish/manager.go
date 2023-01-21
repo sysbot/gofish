@@ -6,328 +6,109 @@ package redfish
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
-// CommandConnectTypesSupported is the command connection type.
+// CommandConnectTypesSupported is
 type CommandConnectTypesSupported string
 
 const (
-
-	// SSHCommandConnectTypesSupported The controller supports a Command
-	// Shell connection using the SSH protocol.
+	// SSHCommandConnectTypesSupported The controller supports a command shell connection through the SSH protocol.
 	SSHCommandConnectTypesSupported CommandConnectTypesSupported = "SSH"
-	// TelnetCommandConnectTypesSupported The controller supports a Command
-	// Shell connection using the Telnet protocol.
+	// TelnetCommandConnectTypesSupported The controller supports a command shell connection through the Telnet
+	// protocol.
 	TelnetCommandConnectTypesSupported CommandConnectTypesSupported = "Telnet"
-	// IPMICommandConnectTypesSupported The controller supports a Command
-	// Shell connection using the IPMI Serial-over-LAN (SOL) protocol.
+	// IPMICommandConnectTypesSupported The controller supports a command shell connection through the IPMI Serial Over
+	// LAN (SOL) protocol.
 	IPMICommandConnectTypesSupported CommandConnectTypesSupported = "IPMI"
-	// OemCommandConnectTypesSupported The controller supports a Command
-	// Shell connection using an OEM-specific protocol.
+	// OemCommandConnectTypesSupported The controller supports a command shell connection through an OEM-specific
+	// protocol.
 	OemCommandConnectTypesSupported CommandConnectTypesSupported = "Oem"
 )
 
-// GraphicalConnectTypesSupported is graphical connection type.
+// GraphicalConnectTypesSupported is
 type GraphicalConnectTypesSupported string
 
 const (
-
-	// KVMIPGraphicalConnectTypesSupported The controller supports a
-	// Graphical Console connection using a KVM-IP (redirection of Keyboard,
-	// Video, Mouse over IP) protocol.
+	// KVMIPGraphicalConnectTypesSupported The controller supports a graphical console connection through a KVM-IP
+	// (redirection of Keyboard, Video, Mouse over IP) protocol.
 	KVMIPGraphicalConnectTypesSupported GraphicalConnectTypesSupported = "KVMIP"
-	// OemGraphicalConnectTypesSupported The controller supports a Graphical
-	// Console connection using an OEM-specific protocol.
+	// OemGraphicalConnectTypesSupported The controller supports a graphical console connection through an OEM-specific
+	// protocol.
 	OemGraphicalConnectTypesSupported GraphicalConnectTypesSupported = "Oem"
 )
 
-// UIConsoleInfo contains information about GUI services.
-type UIConsoleInfo struct {
-	ServiceEnabled        bool
-	MaxConcurrentSessions uint
-	ConnectTypesSupported []string
-}
-
-// SerialConsole shall describe a Serial Console service of a manager.
-type SerialConsole struct {
-	// ConnectTypesSupported shall be an array of the enumerations provided
-	// here. SSH shall be included if the Secure Shell (SSH) protocol is
-	// supported. Telnet shall be included if the Telnet protocol is supported.
-	// IPMI shall be included if the IPMI (Serial-over-LAN) protocol is supported.
-	ConnectTypesSupported []SerialConnectTypesSupported
-	// MaxConcurrentSessions shall contain the
-	// maximum number of concurrent service sessions supported by the
-	// implementation.
-	MaxConcurrentSessions int
-	// ServiceEnabled is used for the service. The value shall be true if
-	// enabled and false if disabled.
-	ServiceEnabled bool
-}
-
-// ManagerType shall describe the function of this manager. The value
-// EnclosureManager shall be used if this manager controls one or more services
-// through aggregation. The value BMC shall be used if this manager represents a
-// traditional server management controller. The value ManagementController
-// shall be used if none of the other enumerations apply.
+// ManagerType is
 type ManagerType string
 
 const (
-
-	// ManagementControllerManagerType A controller used primarily to monitor
-	// or manage the operation of a device or system.
+	// ManagementControllerManagerType A controller that primarily monitors or manages the operation of a device or
+	// system.
 	ManagementControllerManagerType ManagerType = "ManagementController"
-	// EnclosureManagerManagerType A controller which provides management
-	// functions for a chassis or group of devices or systems.
+	// EnclosureManagerManagerType A controller that provides management functions for a chassis or group of devices or
+	// systems.
 	EnclosureManagerManagerType ManagerType = "EnclosureManager"
-	// BMCManagerType A controller which provides management functions for a
-	// single computer system.
+	// BMCManagerType A controller that provides management functions for a single computer system.
 	BMCManagerType ManagerType = "BMC"
-	// RackManagerManagerType A controller which provides management
-	// functions for a whole or part of a rack.
+	// RackManagerManagerType A controller that provides management functions for a whole or part of a rack.
 	RackManagerManagerType ManagerType = "RackManager"
-	// AuxiliaryControllerManagerType A controller which provides management
-	// functions for a particular subsystem or group of devices.
+	// AuxiliaryControllerManagerType A controller that provides management functions for a particular subsystem or
+	// group of devices.
 	AuxiliaryControllerManagerType ManagerType = "AuxiliaryController"
-	// ServiceManagerType A software-based service which provides management
-	// functions.
+	// ServiceManagerType A software-based service that provides management functions.
 	ServiceManagerType ManagerType = "Service"
 )
 
-// ResetToDefaultsType is the default to set on reset.
+// ResetToDefaultsType is
 type ResetToDefaultsType string
 
 const (
-
 	// ResetAllResetToDefaultsType Reset all settings to factory defaults.
 	ResetAllResetToDefaultsType ResetToDefaultsType = "ResetAll"
-	// PreserveNetworkAndUsersResetToDefaultsType Reset all settings except
-	// network and local user names/passwords to factory defaults.
+	// PreserveNetworkAndUsersResetToDefaultsType Reset all settings except network and local user names/passwords to
+	// factory defaults.
 	PreserveNetworkAndUsersResetToDefaultsType ResetToDefaultsType = "PreserveNetworkAndUsers"
-	// PreserveNetworkResetToDefaultsType Reset all settings except network
-	// settings to factory defaults.
+	// PreserveNetworkResetToDefaultsType Reset all settings except network settings to factory defaults.
 	PreserveNetworkResetToDefaultsType ResetToDefaultsType = "PreserveNetwork"
 )
 
-// SerialConnectTypesSupported is serial connection type.
+// SerialConnectTypesSupported is
 type SerialConnectTypesSupported string
 
 const (
-
-	// SSHSerialConnectTypesSupported The controller supports a Serial
-	// Console connection using the SSH protocol.
+	// SSHSerialConnectTypesSupported The controller supports a serial console connection through the SSH protocol.
 	SSHSerialConnectTypesSupported SerialConnectTypesSupported = "SSH"
-	// TelnetSerialConnectTypesSupported The controller supports a Serial
-	// Console connection using the Telnet protocol.
+	// TelnetSerialConnectTypesSupported The controller supports a serial console connection through the Telnet
+	// protocol.
 	TelnetSerialConnectTypesSupported SerialConnectTypesSupported = "Telnet"
-	// IPMISerialConnectTypesSupported The controller supports a Serial
-	// Console connection using the IPMI Serial-over-LAN (SOL) protocol.
+	// IPMISerialConnectTypesSupported The controller supports a serial console connection through the IPMI Serial Over
+	// LAN (SOL) protocol.
 	IPMISerialConnectTypesSupported SerialConnectTypesSupported = "IPMI"
-	// OemSerialConnectTypesSupported The controller supports a Serial
-	// Console connection using an OEM-specific protocol.
+	// OemSerialConnectTypesSupported The controller supports a serial console connection through an OEM-specific
+	// protocol.
 	OemSerialConnectTypesSupported SerialConnectTypesSupported = "Oem"
 )
 
-// CommandShell shall describe a Command Shell service of a manager.
+// CommandShell shall describe a command shell service for a manager.
 type CommandShell struct {
-	// ConnectTypesSupported shall be an array of the enumerations provided here.
-	// SSH shall be included if the Secure Shell (SSH) protocol is supported.
-	// Telnet shall be included if the Telnet protocol is supported. IPMI shall
-	// be included if the IPMI (Serial-over-LAN) protocol is supported.
+	// ConnectTypesSupported shall contain an array of the enumerations. SSH shall be included if the Secure Shell
+	// (SSH) protocol is supported. Telnet shall be included if the Telnet protocol is supported. IPMI shall be
+	// included if the IPMI Serial Over LAN (SOL) protocol is supported.
 	ConnectTypesSupported []CommandConnectTypesSupported
-	// MaxConcurrentSessions shall contain the maximum number of concurrent
-	// service sessions supported by the implementation.
-	MaxConcurrentSessions uint32
-	// ServiceEnabled is used for the service. The value shall be true if
-	// enabled and false if disabled.
-	ServiceEnabled bool
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
 }
 
-// GraphicalConsole shall describe a Graphical Console service of a manager.
-type GraphicalConsole struct {
-	// ConnectTypesSupported shall be an array of the enumerations provided here.
-	// RDP shall be included if the Remote Desktop (RDP) protocol is supported.
-	// KVMIP shall be included if a vendor-define KVM-IP protocol is supported.
-	ConnectTypesSupported []GraphicalConnectTypesSupported
-	// MaxConcurrentSessions shall contain the maximum number of concurrent
-	// service sessions supported by the implementation.
-	MaxConcurrentSessions uint32
-	// ServiceEnabled is used for the service. The value shall be true if
-	// enabled and false if disabled.
-	ServiceEnabled bool
-}
-
-// Manager is a management subsystem. Examples of managers are BMCs, Enclosure
-// Managers, Management Controllers and other subsystems assigned manageability
-// functions.
-type Manager struct {
-	common.Entity
-
-	// ODataContext is the odata context.
-	ODataContext string `json:"@odata.context"`
-	// ODataType is the odata type.
-	ODataType string `json:"@odata.type"`
-	// AutoDSTEnabled shall contain the enabled status of the automatic Daylight
-	// Saving Time (DST) adjustment of the manager's DateTime. It shall be true
-	// if Automatic DST adjustment is enabled and false if disabled.
-	AutoDSTEnabled bool
-	// CommandShell shall contain information
-	// about the Command Shell service of this manager.
-	CommandShell CommandShell
-	// DateTime shall represent the current DateTime value for the manager, with
-	// offset from UTC, in Redfish Timestamp format.
-	DateTime string
-	// DateTimeLocalOffset is The value is property shall represent the offset
-	// from UTC time that the current value of DataTime property contains.
-	DateTimeLocalOffset string
-	// Description provides a description of this resource.
-	Description string
-	// ethernetInterfaces shall be a link to a collection of type
-	// EthernetInterfaceCollection.
-	ethernetInterfaces string
-	// FirmwareVersion shall contain the firmware version as defined by the
-	// manufacturer for the associated manager.
-	FirmwareVersion string
-	// GraphicalConsole shall contain the information about the Graphical
-	// Console (KVM-IP) service of this manager.
-	GraphicalConsole GraphicalConsole
-	// hostInterfaces shall be a link to a collection of type
-	// HostInterfaceCollection.
-	hostInterfaces string
-	// LastResetTime last BMC reset time
-	LastResetTime string `json:"LastResetTime,omitempty"`
-	// logServices shall contain a reference to a collection of type
-	// LogServiceCollection which are for the use of this manager.
-	logServices string
-	// ManagerType is used if this manager controls one or more services
-	// through aggregation. The value BMC shall be used if this manager
-	// represents a traditional server management controller. The value
-	// ManagementController shall be used if none of the other enumerations
-	// apply.
-	ManagerType ManagerType
-	// Manufacturer shall contain the name of the organization responsible for
-	// producing the manager. This organization might be the entity from whom
-	// the manager is purchased, but this is not necessarily true.
-	Manufacturer string
-	// Model shall contain the information about how the manufacturer references
-	// this manager.
-	Model string
-	// networkProtocol shall contain a reference to a resource of type
-	// ManagerNetworkProtocol which represents the network services for this
-	// manager.
-	networkProtocol string
-	// OemActions contains all the vendor specific actions. It is vendor responsibility to parse this field accordingly
-	OemActions json.RawMessage
-	// Oem are all OEM data under top level manager section
-	Oem json.RawMessage
-	// OEMLinks are all OEM data under link section
-	OemLinks json.RawMessage
-	// PartNumber shall contain a part number assigned by the organization that
-	// is responsible for producing or manufacturing the manager.
-	PartNumber string
-	// PowerState shall contain the power state of the Manager.
-	PowerState PowerState
-	// Redundancy is used to show how this manager is grouped with other
-	// managers for form redundancy sets.
-	Redundancy []Redundancy
-	// RedundancyCount is the number of Redundancy objects.
-	RedundancyCount int `json:"Redundancy@odata.count"`
-	// remoteAccountService shall contain a reference to the
-	// AccountService resource for the remote Manager represented by this
-	// resource. This property shall only be present when providing
-	// aggregation of Redfish services.
-	remoteAccountService string
-	// RemoteRedfishServiceURI shall contain the URI of the
-	// Redfish Service Root for the remote Manager represented by this
-	// resource. This property shall only be present when providing
-	// aggregation of Redfish services.
-	RemoteRedfishServiceURI string `json:"RemoteRedfishServiceUri"`
-	// SerialConsole shall contain information about the Serial Console service
-	// of this manager.
-	SerialConsole SerialConsole
-	// serialInterfaces shall be a link to a collection of type
-	// SerialInterfaceCollection which are for the use of this manager.
-	serialInterfaces string
-	// SerialNumber shall contain a manufacturer-allocated number that
-	// identifies the manager.
-	SerialNumber string
-	// ServiceEntryPointUUID shall contain the UUID of the Redfish Service
-	// provided by this manager. Each Manager providing an Entry Point to the
-	// same Redfish Service shall report the same UUID value (even though the
-	// name of the property may imply otherwise). This property shall not be
-	// present if this manager does not provide a Redfish Service Entry Point.
-	ServiceEntryPointUUID string
-	// Status shall contain any status or health properties
-	// of the resource.
-	Status common.Status
-	// UUID shall contain the universal unique
-	// identifier number for the manager.
-	UUID string
-	// virtualMedia shall contain a reference to a collection of type
-	// VirtualMediaCollection which are for the use of this manager.
-	virtualMedia string
-	// managerForChassis shall contain an array of references to Chassis
-	// resources of which this Manager instance has control.
-	managerForChassis []string
-	// ManagerForChassisCount is the number of Chassis being managed.
-	ManagerForChassisCount int
-	// managerForServers shall contain an array of references to ComputerSystem
-	// resources of which this Manager instance has control.
-	managerForServers []string
-	// ManagerForServersCount is the number of Servers being managed.
-	ManagerForServersCount int
-	// managerForSwitches shall contain an array of references to Switch
-	// resources of which this Manager instance has control.
-	managerForSwitches []string
-	// ManagerForSwitchesCount is the number of Switches being managed.
-	ManagerForSwitchesCount int
-	// managerInChassis shall contain a reference to the chassis that this
-	// manager is located in.
-	managerInChassis string
-	// resetTarget is the internal URL to send reset targets to.
-	resetTarget string
-	// SupportedResetTypes, if provided, is the reset types this system supports.
-	SupportedResetTypes []ResetType
-	// rawData holds the original serialized JSON so we can compare updates.
-	rawData []byte
-}
-
-// UnmarshalJSON unmarshals a Manager object from the raw JSON.
-func (manager *Manager) UnmarshalJSON(b []byte) error {
-	type temp Manager
-	type actions struct {
-		Reset struct {
-			AllowedResetTypes []ResetType `json:"ResetType@Redfish.AllowableValues"`
-			Target            string
-		} `json:"#Manager.Reset"`
-
-		Oem json.RawMessage // OEM actions will be stored here
-	}
-	type linkReference struct {
-		ManagerForChassis       common.Links
-		ManagerForChassisCount  int `json:"ManagerForChassis@odata.count"`
-		ManagerForServers       common.Links
-		ManagerForServersCount  int `json:"ManagerForServers@odata.count"`
-		ManagerForSwitches      common.Links
-		ManagerForSwitchesCount int `json:"ManagerForSwitches@odata.count"`
-		ManagerInChassis        common.Link
-		Oem                     json.RawMessage
-	}
+// UnmarshalJSON unmarshals a CommandShell object from the raw JSON.
+func (commandshell *CommandShell) UnmarshalJSON(b []byte) error {
+	type temp CommandShell
 	var t struct {
 		temp
-		EthernetInterfaces   common.Link
-		HostInterfaces       common.Link
-		LogServices          common.Link
-		NetworkProtocol      common.Link
-		RemoteAccountService common.Link
-		SerialInterfaces     common.Link
-		VirtualMedia         common.Link
-		Links                linkReference
-		Actions              actions
-		Oem                  json.RawMessage
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -335,27 +116,248 @@ func (manager *Manager) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Extract the links to other entities
+	*commandshell = CommandShell(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// GraphicalConsole shall describe a graphical console service for a manager.
+type GraphicalConsole struct {
+	// ConnectTypesSupported shall contain an array of the enumerations. RDP shall be included if the Remote Desktop
+	// (RDP) protocol is supported. KVMIP shall be included if a vendor-define KVM-IP protocol is supported.
+	ConnectTypesSupported []GraphicalConnectTypesSupported
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
+}
+
+// UnmarshalJSON unmarshals a GraphicalConsole object from the raw JSON.
+func (graphicalconsole *GraphicalConsole) UnmarshalJSON(b []byte) error {
+	type temp GraphicalConsole
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*graphicalconsole = GraphicalConsole(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// ActiveSoftwareImage shall contain a link to a resource of type SoftwareInventory that represents the active
+	// firmware image for this manager.
+	ActiveSoftwareImage string
+	// ManagedBy shall contain an array of links to resources of type Manager that represent the managers for this
+	// manager.
+	ManagedBy []Manager
+	// ManagedBy@odata.count
+	ManagedByCount int `json:"ManagedBy@odata.count"`
+	// ManagerForChassis shall contain an array of links to chassis over which this manager instance has control.
+	ManagerForChassis []Chassis
+	// ManagerForChassis@odata.count
+	ManagerForChassisCount int `json:"ManagerForChassis@odata.count"`
+	// ManagerForManagers shall contain an array of links to resources of type Manager that represent the managers
+	// being managed by this manager.
+	ManagerForManagers []Manager
+	// ManagerForManagers@odata.count
+	ManagerForManagersCount int `json:"ManagerForManagers@odata.count"`
+	// ManagerForServers shall contain an array of links to computer systems over which this manager instance has
+	// control.
+	ManagerForServers []ComputerSystem
+	// ManagerForServers@odata.count
+	ManagerForServersCount int `json:"ManagerForServers@odata.count"`
+	// ManagerForSwitches shall contain an array of links to switches that this manager instance controls.
+	ManagerForSwitches []Switch
+	// ManagerForSwitches@odata.count
+	ManagerForSwitchesCount int `json:"ManagerForSwitches@odata.count"`
+	// ManagerInChassis shall contain a link to the chassis where this manager is located.
+	ManagerInChassis string
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// SoftwareImages shall contain an array of links to resource of type SoftwareInventory that represent the firmware
+	// images that apply to this manager.
+	SoftwareImages []SoftwareInventory
+	// SoftwareImages@odata.count
+	SoftwareImagesCount int `json:"SoftwareImages@odata.count"`
+}
+
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Manager shall represent a management subsystem for a Redfish implementation.
+type Manager struct {
+	common.Entity
+	// ODataContext is the odata context.
+	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
+	// ODataType is the odata type.
+	ODataType string `json:"@odata.type"`
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// AdditionalFirmwareVersions shall contain the additional firmware versions of the manager.
+	AdditionalFirmwareVersions string
+	// AutoDSTEnabled shall indicate whether the manager is configured for automatic Daylight Saving Time (DST)
+	// adjustment.
+	AutoDSTEnabled string
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
+	// CommandShell shall contain information about the command shell service of this manager.
+	CommandShell string
+	// DateTime shall contain the current date and time with UTC offset of the manager.
+	DateTime string
+	// DateTimeLocalOffset shall contain the offset from UTC time that the DateTime property contains. If both DateTime
+	// and DateTimeLocalOffset are provided in modification requests, services shall apply DateTimeLocalOffset after
+	// DateTime is applied.
+	DateTimeLocalOffset string
+	// DedicatedNetworkPorts shall contain a link to a resource collection of type PortCollection that represent the
+	// dedicated network ports of the manager.
+	DedicatedNetworkPorts string
+	// Description provides a description of this resource.
+	Description string
+	// EthernetInterfaces shall contain a link to a resource collection of type EthernetInterfaceCollection.
+	EthernetInterfaces string
+	// FirmwareVersion shall contain the firmware version as defined by the manufacturer for the associated manager.
+	FirmwareVersion string
+	// GraphicalConsole shall contain the information about the graphical console (KVM-IP) service of this manager.
+	// This property should be used to describe a service for the manager's console or operating system, not a service
+	// provided on behalf of a host operating system. Implementations representing host OS consoles, known generally as
+	// a KVM-IP feature, should use the GraphicalConsole property in ComputerSystem.
+	GraphicalConsole string
+	// HostInterfaces shall contain a link to a resource collection of type HostInterfaceCollection.
+	HostInterfaces string
+	// LastResetTime shall contain the date and time when the manager last came out of a reset or was rebooted.
+	LastResetTime string
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// Location shall contain location information of the associated manager.
+	Location string
+	// LocationIndicatorActive shall contain the state of the indicator used to physically identify or locate this
+	// resource. A write to this property shall update the value of IndicatorLED in this resource, if supported, to
+	// reflect the implementation of the locating function.
+	LocationIndicatorActive bool
+	// LogServices shall contain a link to a resource collection of type LogServiceCollection that this manager uses.
+	LogServices string
+	// ManagerDiagnosticData shall contain a link to a resource of type ManagerDiagnosticData that represents the
+	// diagnostic data for this manager.
+	ManagerDiagnosticData ManagerDiagnosticData
+	// ManagerType shall describe the function of this manager. The 'ManagementController' value shall be used if none
+	// of the other enumerations apply.
+	ManagerType string
+	// Manufacturer shall contain the name of the organization responsible for producing the manager. This organization
+	// may be the entity from whom the manager is purchased, but this is not necessarily true.
+	Manufacturer string
+	// Model shall contain the information about how the manufacturer refers to this manager.
+	Model string
+	// NetworkProtocol shall contain a link to a resource of type ManagerNetworkProtocol, which represents the network
+	// services for this manager.
+	NetworkProtocol string
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PartNumber shall contain a part number assigned by the organization that is responsible for producing or
+	// manufacturing the manager.
+	PartNumber string
+	// PowerState shall contain the power state of the manager.
+	PowerState PowerState
+	// Redundancy shall show how this manager is grouped with other managers for form redundancy sets.
+	Redundancy []Redundancy
+	// Redundancy@odata.count
+	RedundancyCount int `json:"Redundancy@odata.count"`
+	// RemoteAccountService shall contain a link to the account service resource for the remote manager that this
+	// resource represents. This property shall only be present when providing aggregation of a remote manager.
+	RemoteAccountService string
+	// RemoteRedfishServiceUri shall contain the URI of the Redfish service root for the remote manager that this
+	// resource represents. This property shall only be present when providing aggregation of Redfish services.
+	RemoteRedfishServiceUri string
+	// SecurityPolicy shall contain a link to a resource of type SecurityPolicy that contains the security policy
+	// settings for this manager.
+	SecurityPolicy SecurityPolicy
+	// SerialInterfaces shall contain a link to a resource collection of type SerialInterfaceCollection, which this
+	// manager uses.
+	SerialInterfaces string
+	// SerialNumber shall contain a manufacturer-allocated number that identifies the manager.
+	SerialNumber string
+	// ServiceEntryPointUUID shall contain the UUID of the Redfish service that is hosted by this manager. Each manager
+	// providing an entry point to the same Redfish service shall report the same UUID value, even though the name of
+	// the property may imply otherwise. This property shall not be present if this manager does not provide a Redfish
+	// service entry point.
+	ServiceEntryPointUUID UUID
+	// ServiceIdentification shall contain a vendor or user-provided value that identifies and associates a discovered
+	// Redfish service with a particular product instance. This property shall only be present if the manager provides
+	// a ServiceRoot resource. The value of this property can be used during deployment processes to match user
+	// credentials or other a priori product instance information to the appropriate Redfish service.
+	ServiceIdentification string
+	// SharedNetworkPorts shall contain a link to a resource collection of type PortCollection that represent the
+	// shared network ports of the manager. The members of this collection shall reference Port resources subordinate
+	// to NetworkAdapter resources.
+	SharedNetworkPorts string
+	// SparePartNumber shall contain the spare part number of the manager.
+	SparePartNumber string
+	// Status shall contain any status or health properties of the resource.
+	Status common.Status
+	// TimeZoneName shall contain the time zone of the manager. The time zone shall be either the 'Name' or the
+	// 'Format' for the zone as defined in the IANA Time Zone Database. The value of this property is used for display
+	// purposes, especially to enhance the display of time. A Redfish service may not be able to ensure accuracy and
+	// consistency between the DateTimeOffset property and this property. Therefore, to specify the correct time zone
+	// offset, see the DateTimeOffset property.
+	TimeZoneName string
+	// USBPorts shall contain a link to a resource collection of type PortCollection that represent the USB ports of
+	// the manager.
+	USBPorts string
+	// UUID shall contain the UUID for the manager.
+	UUID string
+	// rawData holds the original serialized JSON so we can compare updates.
+	rawData []byte
+}
+
+// UnmarshalJSON unmarshals a Manager object from the raw JSON.
+func (manager *Manager) UnmarshalJSON(b []byte) error {
+	type temp Manager
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
 	*manager = Manager(t.temp)
-	manager.ethernetInterfaces = string(t.EthernetInterfaces)
-	manager.hostInterfaces = string(t.HostInterfaces)
-	manager.logServices = string(t.LogServices)
-	manager.networkProtocol = string(t.NetworkProtocol)
-	manager.OemActions = t.Actions.Oem
-	manager.Oem = t.Oem
-	manager.OemLinks = t.Links.Oem
-	manager.remoteAccountService = string(t.RemoteAccountService)
-	manager.serialInterfaces = string(t.SerialInterfaces)
-	manager.virtualMedia = string(t.VirtualMedia)
-	manager.managerForServers = t.Links.ManagerForServers.ToStrings()
-	manager.ManagerForServersCount = t.Links.ManagerForServersCount
-	manager.managerForChassis = t.Links.ManagerForChassis.ToStrings()
-	manager.ManagerForChassisCount = t.Links.ManagerForChassisCount
-	manager.ManagerForSwitchesCount = t.Links.ManagerForSwitchesCount
-	manager.managerForSwitches = t.Links.ManagerForSwitches.ToStrings()
-	manager.managerInChassis = string(t.Links.ManagerInChassis)
-	manager.SupportedResetTypes = t.Actions.Reset.AllowedResetTypes
-	manager.resetTarget = t.Actions.Reset.Target
+
+	// Extract the links to other entities for later
 
 	// This is a read/write object, so we need to save the raw object data for later
 	manager.rawData = b
@@ -365,18 +367,19 @@ func (manager *Manager) UnmarshalJSON(b []byte) error {
 
 // Update commits updates to this object's properties to the running system.
 func (manager *Manager) Update() error {
+
 	// Get a representation of the object's original state so we can find what
 	// to update.
 	original := new(Manager)
-	err := original.UnmarshalJSON(manager.rawData)
-	if err != nil {
-		return err
-	}
+	original.UnmarshalJSON(manager.rawData)
 
 	readWriteFields := []string{
 		"AutoDSTEnabled",
 		"DateTime",
 		"DateTimeLocalOffset",
+		"LocationIndicatorActive",
+		"ServiceIdentification",
+		"TimeZoneName",
 	}
 
 	originalElement := reflect.ValueOf(original).Elem()
@@ -385,7 +388,7 @@ func (manager *Manager) Update() error {
 	return manager.Entity.Update(originalElement, currentElement, readWriteFields)
 }
 
-// GetManager will get a Manager instance from the Swordfish service.
+// GetManager will get a Manager instance from the service.
 func GetManager(c common.Client, uri string) (*Manager, error) {
 	resp, err := c.Get(uri)
 	if err != nil {
@@ -403,9 +406,14 @@ func GetManager(c common.Client, uri string) (*Manager, error) {
 	return &manager, nil
 }
 
-// ListReferencedManagers gets the collection of Managers
+// ListReferencedManagers gets the collection of Manager from
+// a provided reference.
 func ListReferencedManagers(c common.Client, link string) ([]*Manager, error) {
 	var result []*Manager
+	if link == "" {
+		return result, nil
+	}
+
 	links, err := common.GetCollection(c, link)
 	if err != nil {
 		return result, err
@@ -423,72 +431,90 @@ func ListReferencedManagers(c common.Client, link string) ([]*Manager, error) {
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
 	}
-
-	return result, collectionError
 }
 
-// Reset shall perform a reset of the manager.
-func (manager *Manager) Reset(resetType ResetType) error {
-	if len(manager.SupportedResetTypes) == 0 {
-		// reset directly without reset type. HPE server has the behavior
-		type temp struct {
-			Action string
-		}
-		t := temp{
-			Action: "Manager.Reset",
-		}
+// ManagerService The manager services, such as serial console, command shell, or graphical console service.
+type ManagerService struct {
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
+}
 
-		resp, err := manager.Client.Post(manager.resetTarget, t)
-		if err == nil {
-			defer resp.Body.Close()
-		}
+// UnmarshalJSON unmarshals a ManagerService object from the raw JSON.
+func (managerservice *ManagerService) UnmarshalJSON(b []byte) error {
+	type temp ManagerService
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
 		return err
 	}
-	// Make sure the requested reset type is supported by the manager.
-	valid := false
-	for _, allowed := range manager.SupportedResetTypes {
-		if resetType == allowed {
-			valid = true
-			break
-		}
-	}
 
-	if !valid {
-		return fmt.Errorf("reset type '%s' is not supported by this manager",
-			resetType)
-	}
+	*managerservice = ManagerService(t.temp)
 
-	type temp struct {
-		ResetType ResetType
-	}
-	t := temp{
-		ResetType: resetType,
-	}
+	// Extract the links to other entities for later
 
-	resp, err := manager.Client.Post(manager.resetTarget, t)
-	if err == nil {
-		defer resp.Body.Close()
-	}
-	return err
+	return nil
 }
 
-// EthernetInterfaces get this system's ethernet interfaces.
-func (manager *Manager) EthernetInterfaces() ([]*EthernetInterface, error) {
-	return ListReferencedEthernetInterfaces(manager.Client, manager.ethernetInterfaces)
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
 }
 
-// HostInterfaces get this system's host interfaces.
-func (manager *Manager) HostInterfaces() ([]*HostInterface, error) {
-	return ListReferencedHostInterfaces(manager.Client, manager.hostInterfaces)
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// LogServices get this manager's log services on this system.
-func (manager *Manager) LogServices() ([]*LogService, error) {
-	return ListReferencedLogServices(manager.Client, manager.logServices)
+// SerialConsole shall describe a serial console service for a manager.
+type SerialConsole struct {
+	// ConnectTypesSupported shall contain an array of the enumerations. SSH shall be included if the Secure Shell
+	// (SSH) protocol is supported. Telnet shall be included if the Telnet protocol is supported. IPMI shall be
+	// included if the IPMI Serial Over LAN (SOL) protocol is supported.
+	ConnectTypesSupported []SerialConnectTypesSupported
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
 }
 
-// VirtualMedia gets the virtual media associated with this manager.
-func (manager *Manager) VirtualMedia() ([]*VirtualMedia, error) {
-	return ListReferencedVirtualMedias(manager.Client, manager.virtualMedia)
+// UnmarshalJSON unmarshals a SerialConsole object from the raw JSON.
+func (serialconsole *SerialConsole) UnmarshalJSON(b []byte) error {
+	type temp SerialConsole
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*serialconsole = SerialConsole(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }

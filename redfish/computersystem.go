@@ -6,325 +6,399 @@ package redfish
 
 import (
 	"encoding/json"
-	"fmt"
 	"reflect"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
-// BootOrderTypes is the choice of boot order property to use when controller
-// the persistent boot order for this computer system.
+// AutomaticRetryConfig is
+type AutomaticRetryConfig string
+
+const (
+	// DisabledAutomaticRetryConfig shall indicate that automatic retrying of booting is disabled.
+	DisabledAutomaticRetryConfig AutomaticRetryConfig = "Disabled"
+	// RetryAttemptsAutomaticRetryConfig shall indicate that the number of retries of booting is based on the
+	// AutomaticRetryAttempts property, and the RemainingAutomaticRetryAttempts property indicates the number of
+	// remaining attempts.
+	RetryAttemptsAutomaticRetryConfig AutomaticRetryConfig = "RetryAttempts"
+	// RetryAlwaysAutomaticRetryConfig shall indicate that the system will always automatically retry booting.
+	RetryAlwaysAutomaticRetryConfig AutomaticRetryConfig = "RetryAlways"
+)
+
+// BootOrderTypes is The enumerations of BootOrderTypes specify the choice of boot order property to use when
+// controller the persistent boot order for this computer system.
 type BootOrderTypes string
 
 const (
-
-	// BootOrderBootOrderTypes indicates an ordered array of persistent boot
-	// order for this system.
+	// BootOrderBootOrderTypes The system uses the BootOrder property to specify the persistent boot order.
 	BootOrderBootOrderTypes BootOrderTypes = "BootOrder"
-	// AliasBootOrderBootOrderTypes  indicates an ordered array of aliased
-	// persistent boot order for this system.
+	// AliasBootOrderBootOrderTypes The system uses the AliasBootOrder property to specify the persistent boot order.
 	AliasBootOrderBootOrderTypes BootOrderTypes = "AliasBootOrder"
 )
 
-// BootSourceOverrideEnabled describes the state of the Boot Source Override feature.
+// BootProgressTypes is
+type BootProgressTypes string
+
+const (
+	// NoneBootProgressTypes shall indicate that the system is not booting or running, such as the system is powered
+	// off.
+	NoneBootProgressTypes BootProgressTypes = "None"
+	// PrimaryProcessorInitializationStartedBootProgressTypes shall indicate that the system has started to initialize
+	// the primary processor.
+	PrimaryProcessorInitializationStartedBootProgressTypes BootProgressTypes = "PrimaryProcessorInitializationStarted"
+	// BusInitializationStartedBootProgressTypes shall indicate that the system has started to initialize the buses.
+	BusInitializationStartedBootProgressTypes BootProgressTypes = "BusInitializationStarted"
+	// MemoryInitializationStartedBootProgressTypes shall indicate that the system has started to initialize memory.
+	MemoryInitializationStartedBootProgressTypes BootProgressTypes = "MemoryInitializationStarted"
+	// SecondaryProcessorInitializationStartedBootProgressTypes shall indicate that the system has started to
+	// initialize the secondary processors.
+	SecondaryProcessorInitializationStartedBootProgressTypes BootProgressTypes = "SecondaryProcessorInitializationStarted"
+	// PCIResourceConfigStartedBootProgressTypes shall indicate that the system has started to initialize PCI
+	// resources.
+	PCIResourceConfigStartedBootProgressTypes BootProgressTypes = "PCIResourceConfigStarted"
+	// SystemHardwareInitializationCompleteBootProgressTypes shall indicate that the system has completed initializing
+	// all hardware.
+	SystemHardwareInitializationCompleteBootProgressTypes BootProgressTypes = "SystemHardwareInitializationComplete"
+	// SetupEnteredBootProgressTypes shall indicate that the system has entered the setup utility.
+	SetupEnteredBootProgressTypes BootProgressTypes = "SetupEntered"
+	// OSBootStartedBootProgressTypes shall indicate that the operating system has started to boot.
+	OSBootStartedBootProgressTypes BootProgressTypes = "OSBootStarted"
+	// OSRunningBootProgressTypes shall indicate that the operating system is running and shall indicate the final boot
+	// progress state.
+	OSRunningBootProgressTypes BootProgressTypes = "OSRunning"
+	// OEMBootProgressTypes shall indicate an OEM-defined boot progress state.
+	OEMBootProgressTypes BootProgressTypes = "OEM"
+)
+
+// BootSourceOverrideEnabled is
 type BootSourceOverrideEnabled string
 
 const (
-
-	// DisabledBootSourceOverrideEnabled the system will boot normally.
+	// DisabledBootSourceOverrideEnabled The system boots normally.
 	DisabledBootSourceOverrideEnabled BootSourceOverrideEnabled = "Disabled"
-	// OnceBootSourceOverrideEnabled on its next boot cycle, the system will
-	// boot (one time) to the Boot Source Override Target. The value of
-	// BootSourceOverrideEnabled is then reset back to Disabled.
+	// OnceBootSourceOverrideEnabled On its next boot cycle, the system boots one time to the boot source override
+	// target. Then, the BootSourceOverrideEnabled value is reset to 'Disabled'.
 	OnceBootSourceOverrideEnabled BootSourceOverrideEnabled = "Once"
-	// ContinuousBootSourceOverrideEnabled the system will boot to the target
-	// specified in the BootSourceOverrideTarget until this property is set
-	// to Disabled.
+	// ContinuousBootSourceOverrideEnabled The system boots to the target specified in the BootSourceOverrideTarget
+	// property until this property is 'Disabled'.
 	ContinuousBootSourceOverrideEnabled BootSourceOverrideEnabled = "Continuous"
 )
 
-// BootSourceOverrideTarget the current boot source to be used at next boot instead of the normal boot device, if BootSourceOverrideEnabled is true.
-type BootSourceOverrideTarget string
-
-const (
-	// NoneBootSourceOverrideTarget boot from the normal boot device
-	NoneBootSourceOverrideTarget BootSourceOverrideTarget = "None"
-	// PxeBootSourceOverrideTarget boot from the Pre-Boot EXecution (PXE) environment.
-	PxeBootSourceOverrideTarget BootSourceOverrideTarget = "Pxe"
-	// FloppyBootSourceOverrideTarget boot from the floppy disk drive
-	FloppyBootSourceOverrideTarget BootSourceOverrideTarget = "Floppy"
-	// CdBootSourceOverrideTarget boot from the CD/DVD disc
-	CdBootSourceOverrideTarget BootSourceOverrideTarget = "Cd"
-	// UsbBootSourceOverrideTarget boot from a USB device as specified by the system BIOS
-	UsbBootSourceOverrideTarget BootSourceOverrideTarget = "Usb"
-	// HddBootSourceOverrideTarget boot from a hard drive
-	HddBootSourceOverrideTarget BootSourceOverrideTarget = "Hdd"
-	// BiosSetupBootSourceOverrideTarget boot to the BIOS Setup Utility
-	BiosSetupBootSourceOverrideTarget BootSourceOverrideTarget = "BiosSetup"
-	// UtilitiesBootSourceOverrideTarget boot the manufacturer's Utilities program(s)
-	UtilitiesBootSourceOverrideTarget BootSourceOverrideTarget = "Utilities"
-	// DiagsBootSourceOverrideTarget boot the manufacturer's Diagnostics program
-	DiagsBootSourceOverrideTarget BootSourceOverrideTarget = "Diags"
-	// UefiShellBootSourceOverrideTarget boot to the UEFI Shell.
-	UefiShellBootSourceOverrideTarget BootSourceOverrideTarget = "UefiShell"
-	// UefiTargetBootSourceOverrideTarget boot to the UEFI Device specified in the UefiTargetBootSourceOverride property.
-	UefiTargetBootSourceOverrideTarget BootSourceOverrideTarget = "UefiTarget"
-	// SDCardBootSourceOverrideTarget boot from an SD Card
-	SDCardBootSourceOverrideTarget BootSourceOverrideTarget = "SDCard"
-	// UefiHTTPBootSourceOverrideTarget boot from a UEFI HTTP network location
-	UefiHTTPBootSourceOverrideTarget BootSourceOverrideTarget = "UefiHttp"
-	// RemoteDriveBootSourceOverrideTarget boot from a remote drive (e.g. iSCSI).
-	RemoteDriveBootSourceOverrideTarget BootSourceOverrideTarget = "RemoteDrive"
-	// UefiBootNextBootSourceOverrideTarget boot to the UEFI Device specified in the BootNext property
-	UefiBootNextBootSourceOverrideTarget BootSourceOverrideTarget = "UefiBootNext"
-)
-
-// BootSourceOverrideMode is the BIOS mode (Legacy or UEFI) to be used.
+// BootSourceOverrideMode is
 type BootSourceOverrideMode string
 
 const (
-
-	// LegacyBootSourceOverrideMode the system will boot in non-UEFI boot
-	// mode to the Boot Source Override Target.
+	// LegacyBootSourceOverrideMode The system boots in non-UEFI boot mode to the boot source override target.
 	LegacyBootSourceOverrideMode BootSourceOverrideMode = "Legacy"
-	// UEFIBootSourceOverrideMode the system will boot in UEFI boot mode to
-	// the Boot Source Override Target.
+	// UEFIBootSourceOverrideMode The system boots in UEFI boot mode to the boot source override target.
 	UEFIBootSourceOverrideMode BootSourceOverrideMode = "UEFI"
 )
 
-// HostingRole specifies different features that the hosting ComputerSystem supports.
+// CompositionUseCase is
+type CompositionUseCase string
+
+const (
+	// ResourceBlockCapableCompositionUseCase shall indicate the computer system supports being registered as a
+	// resource block in order for it to participate in composition requests.
+	ResourceBlockCapableCompositionUseCase CompositionUseCase = "ResourceBlockCapable"
+	// ExpandableSystemCompositionUseCase shall indicate the computer system supports expandable system composition and
+	// is associated with a resource block.
+	ExpandableSystemCompositionUseCase CompositionUseCase = "ExpandableSystem"
+)
+
+// GraphicalConnectTypesSupported is
+type GraphicalConnectTypesSupported string
+
+const (
+	// KVMIPGraphicalConnectTypesSupported The controller supports a graphical console connection through a KVM-IP
+	// (redirection of Keyboard, Video, Mouse over IP) protocol.
+	KVMIPGraphicalConnectTypesSupported GraphicalConnectTypesSupported = "KVMIP"
+	// OEMGraphicalConnectTypesSupported The controller supports a graphical console connection through an OEM-specific
+	// protocol.
+	OEMGraphicalConnectTypesSupported GraphicalConnectTypesSupported = "OEM"
+)
+
+// HostingRole is The enumerations of HostingRoles specify different features that the hosting ComputerSystem
+// supports.
 type HostingRole string
 
 const (
-
-	// ApplicationServerHostingRole the system hosts functionality that
-	// supports general purpose applications.
+	// ApplicationServerHostingRole The system hosts functionality that supports general purpose applications.
 	ApplicationServerHostingRole HostingRole = "ApplicationServer"
-	// StorageServerHostingRole the system hosts functionality that supports
-	// the system acting as a storage server.
+	// StorageServerHostingRole The system hosts functionality that supports the system acting as a storage server.
 	StorageServerHostingRole HostingRole = "StorageServer"
-	// SwitchHostingRole the system hosts functionality that supports the
-	// system acting as a switch.
+	// SwitchHostingRole The system hosts functionality that supports the system acting as a switch.
 	SwitchHostingRole HostingRole = "Switch"
+	// ApplianceHostingRole The system hosts functionality that supports the system acting as an appliance.
+	ApplianceHostingRole HostingRole = "Appliance"
+	// BareMetalServerHostingRole The system hosts functionality that supports the system acting as a bare metal
+	// server.
+	BareMetalServerHostingRole HostingRole = "BareMetalServer"
+	// VirtualMachineServerHostingRole The system hosts functionality that supports the system acting as a virtual
+	// machine server.
+	VirtualMachineServerHostingRole HostingRole = "VirtualMachineServer"
+	// ContainerServerHostingRole The system hosts functionality that supports the system acting as a container server.
+	ContainerServerHostingRole HostingRole = "ContainerServer"
 )
 
-// InterfaceType is the Trusted Platform Module type.
+// IndicatorLED is
+type IndicatorLED string
+
+const (
+	// UnknownIndicatorLED shall represent that the indicator LED is in an unknown state. The service shall reject
+	// PATCH or PUT requests containing this value by returning the HTTP 400 (Bad Request) status code.
+	UnknownIndicatorLED IndicatorLED = "Unknown"
+	// LitIndicatorLED shall represent that the indicator LED is in a solid on state. If the service does not support
+	// this value, it shall reject PATCH or PUT requests containing this value by returning the HTTP 400 (Bad Request)
+	// status code.
+	LitIndicatorLED IndicatorLED = "Lit"
+	// BlinkingIndicatorLED shall represent that the indicator LED is in a blinking state where the LED is being turned
+	// on and off in repetition. If the service does not support this value, it shall reject PATCH or PUT requests
+	// containing this value by returning the HTTP 400 (Bad Request) status code.
+	BlinkingIndicatorLED IndicatorLED = "Blinking"
+	// OffIndicatorLED shall represent that the indicator LED is in a solid off state. If the service does not support
+	// this value, it shall reject PATCH or PUT requests containing this value by returning the HTTP 400 (Bad Request)
+	// status code.
+	OffIndicatorLED IndicatorLED = "Off"
+)
+
+// InterfaceType is
 type InterfaceType string
 
 const (
-
-	// TPM1_2InterfaceType Trusted Platform Module (TPM) 1.2.
-	TPM1_2InterfaceType InterfaceType = "TPM1_2"
-	// TPM2_0InterfaceType Trusted Platform Module (TPM) 2.0.
-	TPM2_0InterfaceType InterfaceType = "TPM2_0"
-	// TCM1_0InterfaceType Trusted Cryptography Module (TCM) 1.0.
-	TCM1_0InterfaceType InterfaceType = "TCM1_0"
+	// TPM12InterfaceType Trusted Platform Module (TPM) 1.2.
+	TPM12InterfaceType InterfaceType = "TPM1_2"
+	// TPM20InterfaceType Trusted Platform Module (TPM) 2.0.
+	TPM20InterfaceType InterfaceType = "TPM2_0"
+	// TCM10InterfaceType Trusted Cryptography Module (TCM) 1.0.
+	TCM10InterfaceType InterfaceType = "TCM1_0"
 )
 
-// InterfaceTypeSelection specify the method for switching the TrustedModule
-// InterfaceType, for instance between TPM1_2 and TPM2_0, if supported.
+// InterfaceTypeSelection is The enumerations of InterfaceTypeSelection specify the method for switching the
+// TrustedModule InterfaceType, for instance between TPM1_2 and TPM2_0, if supported.
 type InterfaceTypeSelection string
 
 const (
-
-	// NoneInterfaceTypeSelection the TrustedModule does not support
-	// switching the InterfaceType.
+	// NoneInterfaceTypeSelection The TrustedModule does not support switching the InterfaceType.
 	NoneInterfaceTypeSelection InterfaceTypeSelection = "None"
-	// FirmwareUpdateInterfaceTypeSelection the TrustedModule supports
-	// switching InterfaceType via a firmware update.
+	// FirmwareUpdateInterfaceTypeSelection The TrustedModule supports switching InterfaceType through a firmware
+	// update.
 	FirmwareUpdateInterfaceTypeSelection InterfaceTypeSelection = "FirmwareUpdate"
-	// BiosSettingInterfaceTypeSelection the TrustedModule supports switching
-	// InterfaceType via platform software, such as a BIOS configuration
-	// Attribute.
+	// BiosSettingInterfaceTypeSelection The TrustedModule supports switching InterfaceType through platform software,
+	// such as a BIOS configuration attribute.
 	BiosSettingInterfaceTypeSelection InterfaceTypeSelection = "BiosSetting"
-	// OemMethodInterfaceTypeSelection the TrustedModule supports switching
-	// InterfaceType via an OEM proprietary mechanism.
+	// OemMethodInterfaceTypeSelection The TrustedModule supports switching InterfaceType through an OEM proprietary
+	// mechanism.
 	OemMethodInterfaceTypeSelection InterfaceTypeSelection = "OemMethod"
 )
 
-// MemoryMirroring indicates the memory mirroring setting
+// MemoryMirroring is
 type MemoryMirroring string
 
 const (
-
-	// SystemMemoryMirroring the system supports DIMM mirroring at the System
-	// level. Individual DIMMs are not paired for mirroring in this mode.
+	// SystemMemoryMirroring The system supports DIMM mirroring at the system level. Individual DIMMs are not paired
+	// for mirroring in this mode.
 	SystemMemoryMirroring MemoryMirroring = "System"
-	// DIMMMemoryMirroring the system supports DIMM mirroring at the DIMM
-	// level. Individual DIMMs can be mirrored.
+	// DIMMMemoryMirroring The system supports DIMM mirroring at the DIMM level. Individual DIMMs can be mirrored.
 	DIMMMemoryMirroring MemoryMirroring = "DIMM"
-	// HybridMemoryMirroring the system supports a hybrid mirroring at the
-	// system and DIMM levels. Individual DIMMs can be mirrored.
+	// HybridMemoryMirroring The system supports a hybrid mirroring at the system and DIMM levels. Individual DIMMs can
+	// be mirrored.
 	HybridMemoryMirroring MemoryMirroring = "Hybrid"
-	// NoneMemoryMirroring the system does not support DIMM mirroring.
+	// NoneMemoryMirroring The system does not support DIMM mirroring.
 	NoneMemoryMirroring MemoryMirroring = "None"
 )
 
-// PowerRestorePolicyTypes specifies the choice of power state for the system
-// when power is applied.
+// PowerMode is
+type PowerMode string
+
+const (
+	// MaximumPerformancePowerMode shall indicate the system performs at the highest speeds possible. This mode should
+	// be used when performance is the top priority.
+	MaximumPerformancePowerMode PowerMode = "MaximumPerformance"
+	// BalancedPerformancePowerMode shall indicate the system performs at the highest speeds possible when the
+	// utilization is high and performs at reduced speeds when the utilization is low to save power. This mode is a
+	// compromise between 'MaximumPerformance' and 'PowerSaving'.
+	BalancedPerformancePowerMode PowerMode = "BalancedPerformance"
+	// PowerSavingPowerMode shall indicate the system performs at reduced speeds to save power. This mode should be
+	// used when power saving is the top priority.
+	PowerSavingPowerMode PowerMode = "PowerSaving"
+	// StaticPowerMode shall indicate the system performs at a static base speed.
+	StaticPowerMode PowerMode = "Static"
+	// OSControlledPowerMode shall indicate the system performs at a operating system controlled power mode.
+	OSControlledPowerMode PowerMode = "OSControlled"
+	// OEMPowerMode shall indicate the system performs at an OEM-defined power mode.
+	OEMPowerMode PowerMode = "OEM"
+)
+
+// PowerRestorePolicyTypes is The enumerations of PowerRestorePolicyTypes specify the choice of power state for the
+// system when power is applied.
 type PowerRestorePolicyTypes string
 
 const (
-
-	// AlwaysOnPowerRestorePolicyTypes the system will always power on when
-	// power is applied.
+	// AlwaysOnPowerRestorePolicyTypes The system always powers on when power is applied.
 	AlwaysOnPowerRestorePolicyTypes PowerRestorePolicyTypes = "AlwaysOn"
-	// AlwaysOffPowerRestorePolicyTypes the system will always remain powered
-	// off when power is applied.
+	// AlwaysOffPowerRestorePolicyTypes The system always remains powered off when power is applied.
 	AlwaysOffPowerRestorePolicyTypes PowerRestorePolicyTypes = "AlwaysOff"
-	// LastStatePowerRestorePolicyTypes the system will return to its last
-	// power state (on or off) when power is applied.
+	// LastStatePowerRestorePolicyTypes The system returns to its last on or off power state when power is applied.
 	LastStatePowerRestorePolicyTypes PowerRestorePolicyTypes = "LastState"
 )
 
-// PowerState is the power state of the system.
+// PowerState is
 type PowerState string
 
 const (
-
-	// OnPowerState the system is powered on.
+	// OnPowerState The system is powered on.
 	OnPowerState PowerState = "On"
-	// OffPowerState the system is powered off, although some components may
-	// continue to have AUX power such as management controller.
+	// OffPowerState The system is powered off, although some components might continue to have AUX power such as
+	// management controller.
 	OffPowerState PowerState = "Off"
-	// PoweringOnPowerState A temporary state between Off and On. This
-	// temporary state can be very short.
+	// PoweringOnPowerState A temporary state between off and on. This temporary state can be very short.
 	PoweringOnPowerState PowerState = "PoweringOn"
-	// PoweringOffPowerState A temporary state between On and Off. The power
-	// off action can take time while the OS is in the shutdown process.
+	// PoweringOffPowerState A temporary state between on and off. The power off action can take time while the OS is
+	// in the shutdown process.
 	PoweringOffPowerState PowerState = "PoweringOff"
 )
 
-// SystemType is the type of system.
+// StopBootOnFault is
+type StopBootOnFault string
+
+const (
+	// NeverStopBootOnFault shall indicate the system will continue to attempt to boot if a fault occurs.
+	NeverStopBootOnFault StopBootOnFault = "Never"
+	// AnyFaultStopBootOnFault shall indicate the system will stop the boot if a fault occurs. This includes, but is
+	// not limited to, faults that affect performance, fault tolerance, or capacity.
+	AnyFaultStopBootOnFault StopBootOnFault = "AnyFault"
+)
+
+// SystemType is
 type SystemType string
 
 const (
-
-	// PhysicalSystemType is a System Type of Physical is typically used when
-	// representing the hardware aspects of a system such as is done by a
+	// PhysicalSystemType A SystemType of Physical typically represents the hardware aspects of a system, such as a
 	// management controller.
 	PhysicalSystemType SystemType = "Physical"
-	// VirtualSystemType is a System Type of Virtual is typically used when
-	// representing a system that is actually a virtual machine instance.
+	// VirtualSystemType A SystemType of Virtual typically represents a system that is actually a virtual machine
+	// instance.
 	VirtualSystemType SystemType = "Virtual"
-	// OSSystemType is a System Type of OS is typically used when representing
-	// an OS or hypervisor view of the system.
+	// OSSystemType A SystemType of OS typically represents an OS or hypervisor view of the system.
 	OSSystemType SystemType = "OS"
-	// PhysicallyPartitionedSystemType is a System Type of PhysicallyPartition is
-	// typically used when representing a single system constructed from
-	// one or more physical systems via a firmware or hardware-based service.
+	// PhysicallyPartitionedSystemType A SystemType of PhysicallyPartitioned typically represents a single system
+	// constructed from one or more physical systems through a firmware or hardware-based service.
 	PhysicallyPartitionedSystemType SystemType = "PhysicallyPartitioned"
-	// VirtuallyPartitionedSystemType is a System Type of VirtuallyPartition is
-	// typically used when representing a single system constructed from
-	// one or more virtual systems via a software-based service.
+	// VirtuallyPartitionedSystemType A SystemType of VirtuallyPartitioned typically represents a single system
+	// constructed from one or more virtual systems through a software-based service.
 	VirtuallyPartitionedSystemType SystemType = "VirtuallyPartitioned"
-	// ComposedSystemType is a System Type of Composed is typically used when
-	// representing a single system constructed from disaggregated resource
-	// via the Redfish Composition service.
+	// ComposedSystemType A SystemType of Composed typically represents a single system constructed from disaggregated
+	// resources through the Redfish composition service.
 	ComposedSystemType SystemType = "Composed"
+	// DPUSystemType A SystemType of DPU typically represents a single system that performs offload computation as a
+	// data processing unit, such as a SmartNIC.
+	DPUSystemType SystemType = "DPU"
 )
 
-// WatchdogTimeoutActions specifies the choice of action to take when the Host
-// Watchdog Timer reaches its timeout value.
+// TrustedModuleRequiredToBoot is
+type TrustedModuleRequiredToBoot string
+
+const (
+	// DisabledTrustedModuleRequiredToBoot shall indicate a Trusted Module is not required to boot.
+	DisabledTrustedModuleRequiredToBoot TrustedModuleRequiredToBoot = "Disabled"
+	// RequiredTrustedModuleRequiredToBoot shall indicate a functioning Trusted Module is required to boot.
+	RequiredTrustedModuleRequiredToBoot TrustedModuleRequiredToBoot = "Required"
+)
+
+// WatchdogTimeoutActions is The enumerations of WatchdogTimeoutActions specify the choice of action to take when
+// the host watchdog timer reaches its timeout value.
 type WatchdogTimeoutActions string
 
 const (
-
-	// NoneWatchdogTimeoutActions means no action taken.
+	// NoneWatchdogTimeoutActions No action taken.
 	NoneWatchdogTimeoutActions WatchdogTimeoutActions = "None"
-	// ResetSystemWatchdogTimeoutActions means reset the system.
+	// ResetSystemWatchdogTimeoutActions Reset the system.
 	ResetSystemWatchdogTimeoutActions WatchdogTimeoutActions = "ResetSystem"
-	// PowerCycleWatchdogTimeoutActions means power cycle the system.
+	// PowerCycleWatchdogTimeoutActions Power cycle the system.
 	PowerCycleWatchdogTimeoutActions WatchdogTimeoutActions = "PowerCycle"
-	// PowerDownWatchdogTimeoutActions means power down the system.
+	// PowerDownWatchdogTimeoutActions Power down the system.
 	PowerDownWatchdogTimeoutActions WatchdogTimeoutActions = "PowerDown"
-	// OEMWatchdogTimeoutActions means perform an OEM-defined action.
+	// OEMWatchdogTimeoutActions Perform an OEM-defined action.
 	OEMWatchdogTimeoutActions WatchdogTimeoutActions = "OEM"
 )
 
-// WatchdogWarningActions specifies the choice of action to take when the Host
-// Watchdog Timer is close (typically 3-10 seconds) to reaching its timeout value.
+// WatchdogWarningActions is The enumerations of WatchdogWarningActions specify the choice of action to take when
+// the host watchdog timer is close (typically 3-10 seconds) to reaching its timeout value.
 type WatchdogWarningActions string
 
 const (
-
-	// NoneWatchdogWarningActions means no action taken.
+	// NoneWatchdogWarningActions No action taken.
 	NoneWatchdogWarningActions WatchdogWarningActions = "None"
-	// DiagnosticInterruptWatchdogWarningActions means raise a (typically non-
-	// maskable) Diagnostic Interrupt.
+	// DiagnosticInterruptWatchdogWarningActions Raise a (typically non-maskable) Diagnostic Interrupt.
 	DiagnosticInterruptWatchdogWarningActions WatchdogWarningActions = "DiagnosticInterrupt"
-	// SMIWatchdogWarningActions means raise a Systems Management Interrupt (SMI).
+	// SMIWatchdogWarningActions Raise a Systems Management Interrupt (SMI).
 	SMIWatchdogWarningActions WatchdogWarningActions = "SMI"
-	// MessagingInterruptWatchdogWarningActions means raise a legacy IPMI messaging
-	// interrupt.
+	// MessagingInterruptWatchdogWarningActions Raise a legacy IPMI messaging interrupt.
 	MessagingInterruptWatchdogWarningActions WatchdogWarningActions = "MessagingInterrupt"
-	// SCIWatchdogWarningActions means raise an interrupt using the ACPI System
-	// Control Interrupt (SCI).
+	// SCIWatchdogWarningActions Raise an interrupt using the ACPI System Control Interrupt (SCI).
 	SCIWatchdogWarningActions WatchdogWarningActions = "SCI"
-	// OEMWatchdogWarningActions means perform an OEM-defined action.
+	// OEMWatchdogWarningActions Perform an OEM-defined action.
 	OEMWatchdogWarningActions WatchdogWarningActions = "OEM"
 )
 
-// Boot contains properties which describe boot information for a system.
+// Boot shall contain properties that describe boot information for a system.
 type Boot struct {
-
-	// AliasBootOrder shall be an ordered array
-	// of boot source aliases (of type BootSource) representing the
-	// persistent Boot Order of this computer system.
-	AliasBootOrder         []string `json:",omitempty"`
-	AutomaticRetryAttempts int      `json:",omitempty"`
-	AutomaticRetryConfig   string   `json:",omitempty"`
-	// BootNext shall be the
-	// BootOptionReference of the UEFI Boot Option for one time boot, as
-	// defined by the UEFI Specification. The valid values for this property
-	// are specified in the values of the BootOrder array.
-	// BootSourceOverrideEnabled = Continuous is not supported for UEFI
-	// BootNext as this setting is defined in UEFI as a one-time boot only.
-	BootNext string `json:",omitempty"`
-	// bootOptions is a link to the collection of the UEFI boot options
-	// associated with this computer system.
-	bootOptions string
-	// BootOrder shall be an ordered array of
-	// BootOptionReference strings representing the persistent Boot Order of
-	// this computer system. For UEFI systems, this is the UEFI BootOrder as
-	// defined by the UEFI Specification.
-	BootOrder []string `json:",omitempty"`
-	// BootOrderPropertySelection shall
-	// indicate which boot order property the system uses when specifying the
-	// persistent boot order.
-	BootOrderPropertySelection string `json:",omitempty"`
-	// BootSourceOverrideEnabled shall be Once
-	// if this is a one time boot override and Continuous if this selection
-	// should remain active until cancelled. If the property value is set to
-	// Once, the value will be reset back to Disabled after the
-	// BootSourceOverrideTarget actions have been completed. Changes to this
-	// property do not alter the BIOS persistent boot order configuration.
-	BootSourceOverrideEnabled BootSourceOverrideEnabled `json:",omitempty"`
-	// BootSourceOverrideMode shall be Legacy
-	// for non-UEFI BIOS boot or UEFI for UEFI boot from boot source
-	// specified in BootSourceOverrideTarget property.
-	BootSourceOverrideMode BootSourceOverrideMode `json:",omitempty"`
-	// BootSourceOverrideTarget shall contain
-	// the source to boot the system from, overriding the normal boot order.
-	// The valid values for this property are specified through the
-	// Redfish.AllowableValues annotation. Pxe indicates to PXE boot from the
-	// primary NIC; Floppy, Cd, Usb, Hdd indicates to boot from their devices
-	// respectively. BiosSetup indicates to boot into the native BIOS screen
-	// setup. Utilities and Diags indicate to boot from the local utilities
-	// or diags partitions. UefiTarget indicates to boot from the UEFI device
-	// path found in UefiTargetBootSourceOverride. UefiBootNext indicates to
-	// boot from the UEFI BootOptionReference found in BootNext. Changes to
-	// this property do not alter the BIOS persistent boot order
-	// configuration.
-	BootSourceOverrideTarget BootSourceOverrideTarget `json:",omitempty"`
-	// UefiTargetBootSourceOverride shall be
-	// the UEFI device path of the override boot target. The valid values for
-	// this property are specified through the Redfish.AllowableValues
-	// annotation. BootSourceOverrideEnabled = Continuous is not supported
-	// for UEFI Boot Source Override as this setting is defined in UEFI as a
-	// one time boot only. Changes to this property do not alter the BIOS
+	// AliasBootOrder shall contain an ordered array of boot source aliases of the BootSource type that represents the
+	// persistent boot order of this computer system. This array shall not contain duplicate values. Virtual devices
+	// for an alias should take precedence over a physical device. Systems may attempt to boot from multiple devices
+	// that share an alias.
+	AliasBootOrder []BootSource
+	// AutomaticRetryAttempts shall contain the number of attempts the system will automatically retry booting in the
+	// event the system enters an error state on boot.
+	AutomaticRetryAttempts int
+	// AutomaticRetryConfig shall contain the configuration of how the system retry booting automatically.
+	AutomaticRetryConfig AutomaticRetryConfig
+	// BootNext shall contain the BootOptionReference of the UEFI boot option for one time boot, as defined by the UEFI
+	// Specification. The valid values for this property are specified in the values of the BootOrder array.
+	// BootSourceOverrideEnabled set to 'Continuous' is not supported for BootSourceOverrideTarget set to
+	// 'UefiBootNext' because this setting is defined in UEFI as a one-time boot setting.
+	BootNext string
+	// BootOptions shall contain a link to a resource collection of type BootOptionCollection.
+	BootOptions string
+	// BootOrder shall contain an array of BootOptionReference strings that represent the persistent boot order for
+	// this computer system. For UEFI systems, this is the UEFI Specification-defined UEFI BootOrder.
+	BootOrder []string
+	// BootOrderPropertySelection shall indicate which boot order property the system uses for the persistent boot
+	// order.
+	BootOrderPropertySelection BootOrderTypes
+	// BootSourceOverrideEnabled shall contain 'Once' for a one-time boot override, and 'Continuous' for a remain-
+	// active-until-cancelled override. If set to 'Once', the value is reset to 'Disabled' after the
+	// BootSourceOverrideTarget actions have completed successfully. Changes to this property do not alter the BIOS
 	// persistent boot order configuration.
-	UefiTargetBootSourceOverride string `json:",omitempty"`
+	BootSourceOverrideEnabled BootSourceOverrideEnabled
+	// BootSourceOverrideMode shall contain the BIOS boot mode to use when the system boots from the
+	// BootSourceOverrideTarget boot source.
+	BootSourceOverrideMode BootSourceOverrideMode
+	// BootSourceOverrideTarget shall contain the source to boot the system from, overriding the normal boot order. The
+	// @Redfish.AllowableValues annotation specifies the valid values for this property. 'UefiTarget' indicates to boot
+	// from the UEFI device path found in UefiTargetBootSourceOverride. 'UefiBootNext' indicates to boot from the UEFI
+	// BootOptionReference found in BootNext. Virtual devices for a target should take precedence over a physical
+	// device. Systems may attempt to boot from multiple devices that share a target identifier. Changes to this
+	// property do not alter the BIOS persistent boot order configuration.
+	BootSourceOverrideTarget BootSource
+	// Certificates shall contain a link to a resource collection of type CertificateCollection.
+	Certificates string
+	// HttpBootUri shall contain the URI to perform an HTTP or HTTPS boot when BootSourceOverrideTarget is set to
+	// 'UefiHttp'.
+	HttpBootUri string
+	// RemainingAutomaticRetryAttempts shall contain the number of attempts remaining the system will retry booting in
+	// the event the system enters an error state on boot. If '0', the system has no remaining automatic boot retry
+	// attempts and shall not automatically retry booting if the system enters an error state. This property shall be
+	// reset to the value of AutomaticRetryAttempts upon a successful boot attempt.
+	RemainingAutomaticRetryAttempts int
+	// StopBootOnFault shall contain the setting if the boot should stop on a fault.
+	StopBootOnFault StopBootOnFault
+	// TrustedModuleRequiredToBoot shall contain the Trusted Module boot requirement.
+	TrustedModuleRequiredToBoot TrustedModuleRequiredToBoot
+	// UefiTargetBootSourceOverride shall contain the UEFI device path of the override boot target. Changes to this
+	// property do not alter the BIOS persistent boot order configuration.
+	UefiTargetBootSourceOverride string
 }
 
 // UnmarshalJSON unmarshals a Boot object from the raw JSON.
@@ -332,7 +406,6 @@ func (boot *Boot) UnmarshalJSON(b []byte) error {
 	type temp Boot
 	var t struct {
 		temp
-		BootOptions common.Link
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -343,257 +416,235 @@ func (boot *Boot) UnmarshalJSON(b []byte) error {
 	*boot = Boot(t.temp)
 
 	// Extract the links to other entities for later
-	boot.bootOptions = string(t.BootOptions)
 
 	return nil
 }
 
-// BootOption represents the properties of a bootable device available in the
-// system.
-type BootOption struct {
-	common.Entity
-
-	// ODataContext is the odata context.
-	ODataContext string `json:"@odata.context"`
-	// ODataType is the odata type.
-	ODataType string `json:"@odata.type"`
-	// Alias is the alias of this boot source if one exists.
-	Alias BootSourceOverrideTarget
-	// BootOptionEnabled is an indication of whether the boot option is
-	// enabled. If true , it is enabled. If false, the boot option that the
-	// boot order array on the computer system contains is skipped. In the
-	// UEFI context, this property shall influence the load option active
-	// flag for the boot option.
-	BootOptionEnabled bool
-	// BootOptionReference is the unique identifier seen in Boot.BootOrder.
-	BootOptionReference string
-	// DisplayName is the user-readable display name of the boot option
-	// that appears in the boot order list in the user interface.
-	DisplayName string
-	// UefiDevicePath is the UEFI device path to access this UEFI boot
-	// option.
-	UefiDevicePath string
+// BootProgress shall contain the last boot progress state and time.
+type BootProgress struct {
+	// LastBootTimeSeconds shall contain the number of seconds that elapsed between system reset or power on and
+	// LastState transitioning to 'OSRunning'. If LastState contains 'OSRunning', this property shall contain the most
+	// recent boot time. For other values of LastState, this property shall contain the boot time for the previous
+	// boot.
+	LastBootTimeSeconds float64
+	// LastState shall contain the last boot progress state.
+	LastState BootProgressTypes
+	// LastStateTime shall contain the date and time when the last boot state was updated.
+	LastStateTime string
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// OemLastState shall represent the OEM-specific LastState of the BootProgress. This property shall only be present
+	// if LastState is 'OEM'.
+	OemLastState string
 }
 
-// GetBootOption will get a BootOption instance from the service.
-func GetBootOption(c common.Client, uri string) (*BootOption, error) {
-	resp, err := c.Get(uri)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	var bootoption BootOption
-	err = json.NewDecoder(resp.Body).Decode(&bootoption)
-	if err != nil {
-		return nil, err
+// UnmarshalJSON unmarshals a BootProgress object from the raw JSON.
+func (bootprogress *BootProgress) UnmarshalJSON(b []byte) error {
+	type temp BootProgress
+	var t struct {
+		temp
 	}
 
-	bootoption.SetClient(c)
-	return &bootoption, nil
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*bootprogress = BootProgress(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// ResetType describe the type off reset to be issue by the resource
-type ResetType string
+// Composition shall contain information about the composition capabilities and state of a computer system.
+type Composition struct {
+	// UseCases shall contain the composition use cases in which this computer system can participate.
+	UseCases []CompositionUseCase
+}
 
-const (
-	// OnResetType shall be used to power on the machine
-	OnResetType ResetType = "On"
-	// ForceOnResetType shall be used to power on the machine immediately
-	ForceOnResetType ResetType = "ForceOn"
-	// ForceOffResetType shall be used to power off the machine without wait the OS to shutdown
-	ForceOffResetType ResetType = "ForceOff"
-	// ForceRestartResetType shall be used to restart the machine without wait the OS to shutdown
-	ForceRestartResetType ResetType = "ForceRestart"
-	// GracefulRestartResetType shall be used to restart the machine waiting the OS shutdown gracefully
-	GracefulRestartResetType ResetType = "GracefulRestart"
-	// GracefulShutdownResetType shall be used to restart the machine waiting the OS shutdown gracefully
-	GracefulShutdownResetType ResetType = "GracefulShutdown"
-	// PushPowerButtonResetType shall be used to emulate pushing the power button
-	PushPowerButtonResetType ResetType = "PushPowerButton"
-	// PowerCycleResetType shall be used to power cycle the machine
-	PowerCycleResetType ResetType = "PowerCycle"
-	// NmiResetType shall be used to trigger a crash/core dump file
-	NmiResetType ResetType = "Nmi"
-)
+// UnmarshalJSON unmarshals a Composition object from the raw JSON.
+func (composition *Composition) UnmarshalJSON(b []byte) error {
+	type temp Composition
+	var t struct {
+		temp
+	}
 
-// ComputerSystem is used to represent resources that represent a
-// computing system in the Redfish specification.
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*composition = Composition(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// ComputerSystem shall represent a computing system in the Redfish Specification.
 type ComputerSystem struct {
 	common.Entity
-
-	// ODataContext is the @odata.context
+	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
-	// ODataType is the @odata.type
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
+	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-
-	// AssetTag shall contain the value of the asset tag of the system.
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// AssetTag shall contain the system asset tag value.
 	AssetTag string
-	// bios shall be a link to a resource of
-	// type Bios that lists the Bios settings for this system.
-	bios string
-	// BIOSVersion shall be the version string
-	// of the currently installed and running BIOS (for x86 systems). For
-	// other systems, the value may contain a version string representing the
-	// primary system firmware.
-	BIOSVersion string `json:"BiosVersion"`
-	// Boot describes boot information for the current resource.
-	Boot Boot
-	// Description is the resource description.
+	// Bios shall contain a link to a resource of type Bios that lists the BIOS settings for this system.
+	Bios string
+	// BiosVersion shall contain the version string of the currently installed and running BIOS for x86 systems. For
+	// other systems, the property may contain a version string that represents the primary system firmware.
+	BiosVersion string
+	// Boot shall contain the boot settings for this system.
+	Boot string
+	// BootProgress shall contain the last boot progress state and time.
+	BootProgress BootProgress
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
+	// Composition shall contain information about the composition capabilities and state of the computer system.
+	Composition Composition
+	// Description provides a description of this resource.
 	Description string
-	// EthernetInterfaces shall be a link to a
-	// collection of type EthernetInterfaceCollection.
-	ethernetInterfaces string
-	// HostName shall be the host name for this
-	// system, as reported by the operating system or hypervisor. This value
-	// is typically provided to the Manager by a service running in the host
-	// operating system.
+	// EthernetInterfaces shall contain a link to a resource collection of type EthernetInterfaceCollection.
+	EthernetInterfaces string
+	// FabricAdapters shall contain a link to a resource collection of type FabricAdapterCollection.
+	FabricAdapters string
+	// GraphicalConsole shall contain the information about the graphical console (KVM-IP) service of this system.
+	GraphicalConsole string
+	// GraphicsControllers shall contain a link to a resource collection of type GraphicsControllerCollection that
+	// contains graphics controllers that can output video for this system.
+	GraphicsControllers string
+	// HostName shall contain the host name for this system, as reported by the operating system or hypervisor. A
+	// service running in the host operating system typically reports this value to the manager.
 	HostName string
-	// HostWatchdogTimer shall contain properties which
-	// describe the host watchdog timer functionality for this
+	// HostWatchdogTimer shall contain properties that describe the host watchdog timer functionality for this
 	// ComputerSystem.
-	HostWatchdogTimer WatchdogTimer
-	// hostedServices shall describe services supported by this computer system.
-	// hostedServices string
-	// HostingRoles shall be the hosting roles supported by this computer system.
-	HostingRoles []string
-
-	// IndicatorLED shall contain the indicator
-	// light state for the indicator light associated with this system.
-	IndicatorLED common.IndicatorLED
-	// logServices shall be a link to a collection of type LogServiceCollection.
-	logServices string
+	HostWatchdogTimer string
+	// HostedServices shall describe services that this computer system supports.
+	HostedServices string
+	// HostingRoles shall contain the hosting roles that this computer system supports.
+	HostingRoles []HostingRole
+	// IdlePowerSaver shall contain the idle power saver settings of the computer system.
+	IdlePowerSaver IdlePowerSaver
+	// KeyManagement shall contain the key management settings of the computer system.
+	KeyManagement KeyManagement
+	// LastResetTime shall contain the date and time when the system last came out of a reset or was rebooted.
+	LastResetTime string
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// LocationIndicatorActive shall contain the state of the indicator used to physically identify or locate this
+	// resource. A write to this property shall update the value of IndicatorLED in this resource, if supported, to
+	// reflect the implementation of the locating function.
+	LocationIndicatorActive bool
+	// LogServices shall contain a link to a resource collection of type LogServiceCollection.
+	LogServices string
 	// Manufacturer shall contain a value that represents the manufacturer of the system.
 	Manufacturer string
-	// Memory shall be a link to a collection of type MemoryCollection.
-	memory string
-	// memoryDomains shall be a link to a collection of type MemoryDomainCollection.
-	memoryDomains string
-	// MemorySummary is This object shall contain properties which describe
-	// the central memory for the current resource.
-	MemorySummary MemorySummary
-	// Model shall contain the information
-	// about how the manufacturer references this system. This is typically
-	// the product name, without the manufacturer name.
+	// ManufacturingMode shall indicate whether the system is in manufacturing mode. If the system supports SMBIOS, the
+	// value shall match the 'Manufacturing mode is enabled' setting from the 'BIOS Characteristics' entry.
+	ManufacturingMode bool
+	// Memory shall contain a link to a resource collection of type MemoryCollection.
+	Memory string
+	// MemoryDomains shall contain a link to a resource collection of type MemoryDomainCollection.
+	MemoryDomains string
+	// MemorySummary shall describe the central memory for this resource.
+	MemorySummary string
+	// Model shall describe how the manufacturer refers to this system. Typically, this value is the product name for
+	// this system without the manufacturer name.
 	Model string
-	// Name is the resource name.
-	Name string
-	// networkInterfaces shall be a link to a collection of type
-	// NetworkInterfaceCollection.
-	networkInterfaces string
-	// PCIeDevices shall be an array of references of type PCIeDevice.
-	pcieDevices []string
-	// PCIeDevicesCount is the number of PCIeDevices.
+	// NetworkInterfaces shall contain a link to a resource collection of type NetworkInterfaceCollection.
+	NetworkInterfaces string
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PCIeDevices shall contain an array of links of the PCIeDevice type.
+	PCIeDevices []PCIeDevice
+	// PCIeDevices@odata.count
 	PCIeDevicesCount int `json:"PCIeDevices@odata.count"`
-	// PCIeFunctions shall be an array of references of type PCIeFunction.
-	pcieFunctions []string
-	// PCIeFunctionsCount is the number of PCIeFunctions.
+	// PCIeFunctions shall contain an array of links of the PCIeFunction type.
+	PCIeFunctions []PCIeFunction
+	// PCIeFunctions@odata.count
 	PCIeFunctionsCount int `json:"PCIeFunctions@odata.count"`
-	// PartNumber shall contain the part number
-	// for the system as defined by the manufacturer.
+	// PartNumber shall contain the manufacturer-defined part number for the system.
 	PartNumber string
-	// PowerRestorePolicy is the desired
-	// PowerState of the system when power is applied to the system. A value
-	// of 'LastState' shall return the system to the PowerState it was in
-	// when power was lost.
-	PowerRestorePolicy PowerState
+	// PowerCycleDelaySeconds shall contain the number of seconds to delay power on after a 'Reset' action requesting
+	// 'PowerCycle'. The value '0' shall indicate no delay to power on.
+	PowerCycleDelaySeconds float64
+	// PowerMode shall contain the computer system power mode setting.
+	PowerMode PowerMode
+	// PowerOffDelaySeconds shall contain the number of seconds to delay power off during a reset. The value '0' shall
+	// indicate no delay to power off.
+	PowerOffDelaySeconds float64
+	// PowerOnDelaySeconds shall contain the number of seconds to delay power on after a power cycle or during a reset.
+	// The value '0' shall indicate no delay to power on.
+	PowerOnDelaySeconds float64
+	// PowerRestorePolicy shall indicate the desired PowerState of the system when power is applied to the system. The
+	// 'LastState' value shall return the system to the PowerState it was in when power was lost.
+	PowerRestorePolicy string
 	// PowerState shall contain the power state of the system.
 	PowerState PowerState
-	// ProcessorSummary shall contain properties which
-	// describe the central processors for the current resource.
-	ProcessorSummary ProcessorSummary
-	// Processors shall be a link to a collection of type ProcessorCollection.
-	processors string
-	// Redundancy references a redundancy
-	// entity that specifies a kind and level of redundancy and a collection
-	// (RedundancySet) of other ComputerSystems that provide the specified
-	// redundancy to this ComputerSystem.
-	Redundancy string
-	// RedundancyCount is the number of Redundancy objects.
-	RedundancyCount string `json:"Redundancy@odata.count"`
-	// SKU shall contain the Stock Keeping Unit (SKU) for the system.
+	// ProcessorSummary shall describe the central processors for this resource. Processors described by this property
+	// shall be limited to the processors that execute system code, and shall not include processors used for offload
+	// functionality.
+	ProcessorSummary string
+	// Processors shall contain a link to a resource collection of type ProcessorCollection.
+	Processors string
+	// Redundancy shall contain a set of redundancy entities. Each entity specifies a kind and level of redundancy and
+	// a collection, or redundancy set, of other computer systems that provide the specified redundancy to this
+	// computer system.
+	Redundancy []Redundancy
+	// Redundancy@odata.count
+	RedundancyCount int `json:"Redundancy@odata.count"`
+	// SKU shall contain the SKU for the system.
 	SKU string
-	// secureBoot shall be a link to a resource of type SecureBoot.
-	secureBoot string
+	// SecureBoot shall contain a link to a resource of type SecureBoot.
+	SecureBoot string
+	// SerialConsole shall contain information about the serial console services of this system.
+	SerialConsole string
 	// SerialNumber shall contain the serial number for the system.
 	SerialNumber string
-	// SimpleStorage shall be a link to a collection of type SimpleStorageCollection.
-	simpleStorage string
-	// Status shall contain any status or health properties
-	// of the resource.
+	// SimpleStorage shall contain a link to a resource collection of type SimpleStorageCollection.
+	SimpleStorage string
+	// Status shall contain any status or health properties of the resource.
 	Status common.Status
-	// storage shall be a link to a collection
-	// of type StorageCollection.
-	storage string
-	// SubModel shall contain the information
-	// about the sub-model (or config) of the system. This shall not include
-	// the model/product name or the manufacturer name.
+	// Storage shall contain a link to a resource collection of type StorageCollection.
+	Storage string
+	// SubModel shall contain the information about the sub-model (or configuration) of the system. This shall not
+	// include the model/product name or the manufacturer name.
 	SubModel string
-	// SystemType indicates the kind of system that this resource represents.
-	SystemType SystemType
-	// TrustedModules shall contain an array of objects with
-	// properties which describe the trusted modules for the current resource.
-	TrustedModules []TrustedModules
-	// UUID is used to contain a universal unique identifier number for the
-	// system. RFC4122 describes methods that can be used to create the
-	// value. The value should be considered to be opaque. Client software
-	// should only treat the overall value as a universally unique identifier
-	// and should not interpret any sub-fields within the UUID. If the system
-	// supports SMBIOS, the value of the property should be formed by
-	// following the SMBIOS 2.6+ recommendation for converting the SMBIOS
-	// 16-byte UUID structure into the redfish canonical xxxxxxxx-xxxx-xxxx-
-	// xxxx-xxxxxxxxxxxx string format so that the property value matches the
-	// byte order presented by current OS APIs such as WMI and dmidecode.
+	// SystemType An enumeration that indicates the kind of system that this resource represents.
+	SystemType string
+	// USBControllers shall contain a link to a resource collection of type USBControllerCollection that contains USB
+	// controllers for this system.
+	USBControllers string
+	// UUID shall contain the universal unique identifier number for this system. RFC4122 describes methods to create
+	// this value. The value should be considered to be opaque. Client software should only treat the overall value as
+	// a UUID and should not interpret any sub-fields within the UUID. If the system supports SMBIOS, the property
+	// value should follow the SMBIOS 2.6 and later recommendation for converting the SMBIOS 16-byte UUID structure
+	// into the Redfish canonical 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx' string format, so that the property value
+	// matches the byte order presented by current OS APIs, such as WMI and dmidecode.
 	UUID string
-	// Chassis is an array of references to the chassis in which this system is contained.
-	chassis []string
-	// resetTarget is the internal URL to send reset targets to.
-	resetTarget string
-	// SupportedResetTypes, if provided, is the reset types this system supports.
-	SupportedResetTypes []ResetType
-	// setDefaultBootOrderTarget is the URL to send SetDefaultBootOrder actions to.
-	setDefaultBootOrderTarget string
-	// ManagedBy An array of references to the Managers responsible for this system.
-	// This is temporary until a proper method can be implemented to actually
-	// retrieve those objects directly.
-	ManagedBy []string
+	// VirtualMedia shall contain a link to a resource collection of type VirtualMediaCollection that this system uses.
+	VirtualMedia string
+	// VirtualMediaConfig shall contain the information about the virtual media service of this system.
+	VirtualMediaConfig string
 	// rawData holds the original serialized JSON so we can compare updates.
 	rawData []byte
-	// etag contains the etag header when fetching the object. This is used to
-	// control updates to make sure the object has not been modified my a different
-	// process between fetching and updating that could cause conflicts.
-	etag string
 }
 
 // UnmarshalJSON unmarshals a ComputerSystem object from the raw JSON.
 func (computersystem *ComputerSystem) UnmarshalJSON(b []byte) error {
-	type CSActions struct {
-		ComputerSystemReset struct {
-			AllowedResetTypes []ResetType `json:"ResetType@Redfish.AllowableValues"`
-			Target            string
-		} `json:"#ComputerSystem.Reset"`
-		SetDefaultBootOrder struct {
-			Target string
-		} `json:"#ComputerSystem.SetDefaultBootOrder"`
-	}
-
 	type temp ComputerSystem
 	var t struct {
 		temp
-		Actions            CSActions
-		Bios               common.Link
-		Processors         common.Link
-		Memory             common.Link
-		EthernetInterfaces common.Link
-		SimpleStorage      common.Link
-		SecureBoot         common.Link
-		Storage            common.Link
-		NetworkInterfaces  common.Link
-		LogServices        common.Link
-		MemoryDomains      common.Link
-		PCIeDevices        common.Links
-		PCIeFunctions      common.Links
-		Links              CSLinks
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -604,23 +655,6 @@ func (computersystem *ComputerSystem) UnmarshalJSON(b []byte) error {
 	*computersystem = ComputerSystem(t.temp)
 
 	// Extract the links to other entities for later
-	computersystem.bios = string(t.Bios)
-	computersystem.processors = string(t.Processors)
-	computersystem.memory = string(t.Memory)
-	computersystem.ethernetInterfaces = string(t.EthernetInterfaces)
-	computersystem.simpleStorage = string(t.SimpleStorage)
-	computersystem.networkInterfaces = string(t.NetworkInterfaces)
-	computersystem.secureBoot = string(t.SecureBoot)
-	computersystem.storage = string(t.Storage)
-	computersystem.logServices = string(t.LogServices)
-	computersystem.memoryDomains = string(t.MemoryDomains)
-	computersystem.pcieDevices = t.PCIeDevices.ToStrings()
-	computersystem.pcieFunctions = t.PCIeFunctions.ToStrings()
-	computersystem.chassis = t.Links.Chassis.ToStrings()
-	computersystem.resetTarget = t.Actions.ComputerSystemReset.Target
-	computersystem.SupportedResetTypes = t.Actions.ComputerSystemReset.AllowedResetTypes
-	computersystem.setDefaultBootOrderTarget = t.Actions.SetDefaultBootOrder.Target
-	computersystem.ManagedBy = t.Links.ManagedBy.ToStrings()
 
 	// This is a read/write object, so we need to save the raw object data for later
 	computersystem.rawData = b
@@ -630,22 +664,24 @@ func (computersystem *ComputerSystem) UnmarshalJSON(b []byte) error {
 
 // Update commits updates to this object's properties to the running system.
 func (computersystem *ComputerSystem) Update() error {
+
 	// Get a representation of the object's original state so we can find what
 	// to update.
-	cs := new(ComputerSystem)
-	err := cs.UnmarshalJSON(computersystem.rawData)
-	if err != nil {
-		return err
-	}
+	original := new(ComputerSystem)
+	original.UnmarshalJSON(computersystem.rawData)
 
 	readWriteFields := []string{
 		"AssetTag",
 		"HostName",
-		"IndicatorLED",
+		"LocationIndicatorActive",
+		"PowerCycleDelaySeconds",
+		"PowerMode",
+		"PowerOffDelaySeconds",
+		"PowerOnDelaySeconds",
 		"PowerRestorePolicy",
 	}
 
-	originalElement := reflect.ValueOf(cs).Elem()
+	originalElement := reflect.ValueOf(original).Elem()
 	currentElement := reflect.ValueOf(computersystem).Elem()
 
 	return computersystem.Entity.Update(originalElement, currentElement, readWriteFields)
@@ -665,10 +701,6 @@ func GetComputerSystem(c common.Client, uri string) (*ComputerSystem, error) {
 		return nil, err
 	}
 
-	if resp.Header["Etag"] != nil {
-		computersystem.etag = resp.Header["Etag"][0]
-	}
-
 	computersystem.SetClient(c)
 	return &computersystem, nil
 }
@@ -677,6 +709,10 @@ func GetComputerSystem(c common.Client, uri string) (*ComputerSystem, error) {
 // a provided reference.
 func ListReferencedComputerSystems(c common.Client, link string) ([]*ComputerSystem, error) {
 	var result []*ComputerSystem
+	if link == "" {
+		return result, nil
+	}
+
 	links, err := common.GetCollection(c, link)
 	if err != nil {
 		return result, err
@@ -694,340 +730,506 @@ func ListReferencedComputerSystems(c common.Client, link string) ([]*ComputerSys
 
 	if collectionError.Empty() {
 		return result, nil
-	}
-
-	return result, collectionError
-}
-
-// Bios gets the Bios information for this ComputerSystem.
-func (computersystem *ComputerSystem) Bios() (*Bios, error) {
-	if computersystem.bios == "" {
-		return nil, nil
-	}
-
-	return GetBios(computersystem.Client, computersystem.bios)
-}
-
-// BootOptions gets all BootOption items for this system.
-func (computersystem *ComputerSystem) BootOptions() ([]*BootOption, error) {
-	var result []*BootOption
-	links, err := common.GetCollection(computersystem.Client, computersystem.Boot.bootOptions)
-	if err != nil {
-		return result, err
-	}
-
-	collectionError := common.NewCollectionError()
-	for _, bootOptionLink := range links.ItemLinks {
-		bootOption, err := GetBootOption(computersystem.Client, bootOptionLink)
-		if err != nil {
-			collectionError.Failures[bootOptionLink] = err
-		} else {
-			result = append(result, bootOption)
-		}
-	}
-
-	if collectionError.Empty() {
-		return result, nil
-	}
-
-	return result, collectionError
-}
-
-// EthernetInterfaces get this system's ethernet interfaces.
-func (computersystem *ComputerSystem) EthernetInterfaces() ([]*EthernetInterface, error) {
-	return ListReferencedEthernetInterfaces(computersystem.Client, computersystem.ethernetInterfaces)
-}
-
-// LogServices get this system's log services.
-func (computersystem *ComputerSystem) LogServices() ([]*LogService, error) {
-	return ListReferencedLogServices(computersystem.Client, computersystem.logServices)
-}
-
-// Memory gets this system's memory.
-func (computersystem *ComputerSystem) Memory() ([]*Memory, error) {
-	return ListReferencedMemorys(computersystem.Client, computersystem.memory)
-}
-
-// MemoryDomains gets this system's memory domains.
-func (computersystem *ComputerSystem) MemoryDomains() ([]*MemoryDomain, error) {
-	return ListReferencedMemoryDomains(computersystem.Client, computersystem.memoryDomains)
-}
-
-// NetworkInterfaces returns a collection of network interfaces in this system.
-func (computersystem *ComputerSystem) NetworkInterfaces() ([]*NetworkInterface, error) {
-	return ListReferencedNetworkInterfaces(computersystem.Client, computersystem.networkInterfaces)
-}
-
-// PCIeDevices gets all PCIeDevices for this system.
-func (computersystem *ComputerSystem) PCIeDevices() ([]*PCIeDevice, error) {
-	var result []*PCIeDevice
-
-	collectionError := common.NewCollectionError()
-	for _, pciedeviceLink := range computersystem.pcieDevices {
-		pciedevice, err := GetPCIeDevice(computersystem.Client, pciedeviceLink)
-		if err != nil {
-			collectionError.Failures[pciedeviceLink] = err
-		} else {
-			result = append(result, pciedevice)
-		}
-	}
-
-	if collectionError.Empty() {
-		return result, nil
-	}
-
-	return result, collectionError
-}
-
-// PCIeFunctions gets all PCIeFunctions for this system.
-func (computersystem *ComputerSystem) PCIeFunctions() ([]*PCIeFunction, error) {
-	var result []*PCIeFunction
-
-	collectionError := common.NewCollectionError()
-	for _, pciefunctionLink := range computersystem.pcieFunctions {
-		pciefunction, err := GetPCIeFunction(computersystem.Client, pciefunctionLink)
-		if err != nil {
-			collectionError.Failures[pciefunctionLink] = err
-		} else {
-			result = append(result, pciefunction)
-		}
-	}
-
-	if collectionError.Empty() {
-		return result, nil
-	}
-
-	return result, collectionError
-}
-
-// Processors returns a collection of processors from this system
-func (computersystem *ComputerSystem) Processors() ([]*Processor, error) {
-	return ListReferencedProcessors(computersystem.Client, computersystem.processors)
-}
-
-// SecureBoot gets the secure boot information for the system.
-func (computersystem *ComputerSystem) SecureBoot() (*SecureBoot, error) {
-	if computersystem.secureBoot == "" {
-		return nil, nil
-	}
-
-	return GetSecureBoot(computersystem.Client, computersystem.secureBoot)
-}
-
-// SetBoot set a boot object based on a payload request
-func (computersystem *ComputerSystem) SetBoot(b Boot) error { //nolint
-	type temp struct {
-		Boot Boot
-	}
-	t := temp{
-		Boot: b,
-	}
-
-	var header = make(map[string]string)
-	if computersystem.etag != "" {
-		header["If-Match"] = computersystem.etag
-	}
-
-	resp, err := computersystem.Client.PatchWithHeaders(computersystem.ODataID, t, header)
-	if err == nil {
-		return resp.Body.Close()
-	}
-	return err
-}
-
-// Reset shall perform a reset of the ComputerSystem. For systems which implement
-// ACPI Power Button functionality, the PushPowerButton value shall perform or
-// emulate an ACPI Power Button push. The ForceOff value shall remove power from
-// the system or perform an ACPI Power Button Override (commonly known as a
-// 4-second hold of the Power Button). The ForceRestart value shall perform a
-// ForceOff action followed by a On action.
-func (computersystem *ComputerSystem) Reset(resetType ResetType) error {
-	// Make sure the requested reset type is supported by the system
-	valid := false
-	if len(computersystem.SupportedResetTypes) > 0 {
-		for _, allowed := range computersystem.SupportedResetTypes {
-			if resetType == allowed {
-				valid = true
-				break
-			}
-		}
 	} else {
-		// No allowed values supplied, assume we are OK
-		valid = true
+		return result, collectionError
 	}
-
-	if !valid {
-		return fmt.Errorf("reset type '%s' is not supported by this service",
-			resetType)
-	}
-
-	type temp struct {
-		ResetType ResetType
-	}
-	t := temp{
-		ResetType: resetType,
-	}
-
-	var header = make(map[string]string)
-	if computersystem.etag != "" {
-		header["If-Match"] = computersystem.etag
-	}
-
-	resp, err := computersystem.Client.PostWithHeaders(computersystem.resetTarget, t, header)
-	if err == nil {
-		defer resp.Body.Close()
-	}
-	return err
 }
 
-// SetDefaultBootOrder shall set the BootOrder array to the default settings.
-func (computersystem *ComputerSystem) SetDefaultBootOrder() error {
-	// This action wasn't added until 1.5.0, make sure this is supported.
-	if computersystem.setDefaultBootOrderTarget == "" {
-		return fmt.Errorf("SetDefaultBootOrder is not supported by this system") //nolint:golint
-	}
-
-	var header = make(map[string]string)
-	if computersystem.etag != "" {
-		header["If-Match"] = computersystem.etag
-	}
-
-	resp, err := computersystem.Client.PostWithHeaders(computersystem.resetTarget, nil, header)
-	if err == nil {
-		defer resp.Body.Close()
-	}
-	return err
+// HostGraphicalConsole shall describe a graphical console service for a computer system.
+type HostGraphicalConsole struct {
+	// ConnectTypesSupported shall contain an array of the enumerations. KVMIP shall be included if a vendor-define
+	// KVM-IP protocol is supported.
+	ConnectTypesSupported []GraphicalConnectTypesSupported
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// Port shall contain the port assigned to the service.
+	Port int
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
 }
 
-// SimpleStorages gets all simple storage services of this system.
-func (computersystem *ComputerSystem) SimpleStorages() ([]*SimpleStorage, error) {
-	return ListReferencedSimpleStorages(computersystem.Client, computersystem.simpleStorage)
+// UnmarshalJSON unmarshals a HostGraphicalConsole object from the raw JSON.
+func (hostgraphicalconsole *HostGraphicalConsole) UnmarshalJSON(b []byte) error {
+	type temp HostGraphicalConsole
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*hostgraphicalconsole = HostGraphicalConsole(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// Storage gets the storage associated with this system.
-func (computersystem *ComputerSystem) Storage() ([]*Storage, error) {
-	return ListReferencedStorages(computersystem.Client, computersystem.storage)
+// HostSerialConsole shall describe the serial console services for a computer system.
+type HostSerialConsole struct {
+	// IPMI shall contain connection details for a serial console service that uses the IPMI Serial-over-LAN (SOL)
+	// protocol.
+	IPMI string
+	// MaxConcurrentSessions shall contain the maximum number of concurrent service sessions that this implementation
+	// supports.
+	MaxConcurrentSessions string
+	// SSH shall contain connection details for a serial console service that uses the Secure Shell (SSH) protocol.
+	SSH string
+	// Telnet shall contain connection details for a serial console service that uses the Telnet protocol.
+	Telnet string
 }
 
-// CSLinks are references to resources that are related to, but not contained
-// by (subordinate to), this resource.
-type CSLinks struct {
-	// Chassis shall reference a resource of
-	// type Chassis that represents the physical container associated with
-	// this resource.
-	Chassis common.Links
-	// ChassisCount is
+// UnmarshalJSON unmarshals a HostSerialConsole object from the raw JSON.
+func (hostserialconsole *HostSerialConsole) UnmarshalJSON(b []byte) error {
+	type temp HostSerialConsole
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*hostserialconsole = HostSerialConsole(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// HostedServices shall describe services that a computer system supports.
+type HostedServices struct {
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// StorageServices shall contain a link to a resource collection of type HostedStorageServices.
+	StorageServices string
+}
+
+// UnmarshalJSON unmarshals a HostedServices object from the raw JSON.
+func (hostedservices *HostedServices) UnmarshalJSON(b []byte) error {
+	type temp HostedServices
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*hostedservices = HostedServices(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// IdlePowerSaver shall contain the idle power saver settings of a computer system.
+type IdlePowerSaver struct {
+	// Enabled shall indicate if idle power saver is enabled.
+	Enabled string
+	// EnterDwellTimeSeconds shall contain the duration in seconds the computer system is below the
+	// EnterUtilizationPercent value before the idle power save is activated.
+	EnterDwellTimeSeconds int
+	// EnterUtilizationPercent shall contain the percentage of utilization that the computer system shall be lower than
+	// to enter idle power save.
+	EnterUtilizationPercent float64
+	// ExitDwellTimeSeconds shall contain the duration in seconds the computer system is above the
+	// ExitUtilizationPercent value before the idle power save is stopped.
+	ExitDwellTimeSeconds int
+	// ExitUtilizationPercent shall contain the percentage of utilization that the computer system shall be higher than
+	// to exit idle power save.
+	ExitUtilizationPercent float64
+}
+
+// UnmarshalJSON unmarshals a IdlePowerSaver object from the raw JSON.
+func (idlepowersaver *IdlePowerSaver) UnmarshalJSON(b []byte) error {
+	type temp IdlePowerSaver
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*idlepowersaver = IdlePowerSaver(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// KMIPServer shall contain the KMIP server settings for a computer system.
+type KMIPServer struct {
+	// Address shall contain the KMIP server address.
+	Address string
+	// Password shall contain the password to access the KMIP server. The value shall be 'null' in responses.
+	Password string
+	// Port shall contain the KMIP server port.
+	Port int
+	// Username shall contain the username to access the KMIP server.
+	Username string
+}
+
+// UnmarshalJSON unmarshals a KMIPServer object from the raw JSON.
+func (kmipserver *KMIPServer) UnmarshalJSON(b []byte) error {
+	type temp KMIPServer
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*kmipserver = KMIPServer(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// KeyManagement shall contain the key management settings of a computer system.
+type KeyManagement struct {
+	// KMIPCertificates shall contain a link to a resource collection of type CertificateCollection that represents the
+	// server certificates for the servers referenced by the KMIPServers property.
+	KMIPCertificates string
+	// KMIPServers shall contain the KMIP servers to which this computer system is subscribed for key management.
+	KMIPServers []KMIPServer
+}
+
+// UnmarshalJSON unmarshals a KeyManagement object from the raw JSON.
+func (keymanagement *KeyManagement) UnmarshalJSON(b []byte) error {
+	type temp KeyManagement
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*keymanagement = KeyManagement(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// Chassis shall contain an array of links to resources of type Chassis that represent the physical containers
+	// associated with this resource.
+	Chassis []Chassis
+	// Chassis@odata.count
 	ChassisCount int `json:"Chassis@odata.count"`
-	// ConsumingComputerSystems shall be an array of references
-	// to ComputerSystems that are realized, in whole or in part, from this
-	// ComputerSystem.
-	ConsumingComputerSystems common.Links
-	// ConsumingComputerSystemsCount is
+	// ConsumingComputerSystems shall be an array of links to ComputerSystems that are realized, in whole or in part,
+	// from this ComputerSystem.
+	ConsumingComputerSystems []ComputerSystem
+	// ConsumingComputerSystems@odata.count
 	ConsumingComputerSystemsCount int `json:"ConsumingComputerSystems@odata.count"`
-	// CooledBy shall be an array of IDs
-	// containing pointers consistent with JSON pointer syntax to the
-	// resource that powers this computer system.
-	CooledBy common.Links
-	// CooledByCount is
+	// CooledBy shall contain an array of links to resources or objects that cool this computer system.
+	CooledBy []idRef
+	// CooledBy@odata.count
 	CooledByCount int `json:"CooledBy@odata.count"`
-	// Endpoints shall be a reference to the
-	// resources that this system is associated with and shall reference a
-	// resource of type Endpoint.
-	Endpoints common.Links
-	// EndpointsCount is
+	// Endpoints shall contain an array of links to resources of type Endpoint with which this system is associated.
+	Endpoints []Endpoint
+	// Endpoints@odata.count
 	EndpointsCount int `json:"Endpoints@odata.count"`
-	// ManagedBy shall reference a resource of
-	// type manager that represents the resource with management
-	// responsibility for this resource.
-	ManagedBy common.Links
-	// ManagedByCount is
+	// ManagedBy shall contain an array of link to resources of type Manager that represent the resources with
+	// management responsibility for this resource.
+	ManagedBy []Manager
+	// ManagedBy@odata.count
 	ManagedByCount int `json:"ManagedBy@odata.count"`
-	// PoweredBy shall be an array of IDs
-	// containing pointers consistent with JSON pointer syntax to the
-	// resource that powers this computer system.
-	PoweredBy common.Links
-	// PoweredByCount is the number of PoweredBy objects.
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// OffloadedNetworkDeviceFunctions shall contain an array of links to resources of type NetworkDeviceFunction that
+	// represent the network device functions to which this system performs offload computation, such as with a
+	// SmartNIC. This property shall not be present if the SystemType property does not contain 'DPU'.
+	OffloadedNetworkDeviceFunctions []NetworkDeviceFunction
+	// OffloadedNetworkDeviceFunctions@odata.count
+	OffloadedNetworkDeviceFunctionsCount int `json:"OffloadedNetworkDeviceFunctions@odata.count"`
+	// PoweredBy shall contain an array of links to resources or objects that power this computer system.
+	PoweredBy []idRef
+	// PoweredBy@odata.count
 	PoweredByCount int `json:"PoweredBy@odata.count"`
-	// ResourceBlocks is used in this Computer System.
-	ResourceBlocks common.Links
-	// ResourceBlocksCount is the number of ResourceBlocks.
+	// ResourceBlocks shall contain an array of links to resources of type ResourceBlock that show the resource blocks
+	// that are used in this computer system.
+	ResourceBlocks []ResourceBlock
+	// ResourceBlocks@odata.count
 	ResourceBlocksCount int `json:"ResourceBlocks@odata.count"`
-	// SupplyingComputerSystems shall be an array of references
-	// to ComputerSystems that contribute, in whole or in part, to the
-	// implementation of this ComputerSystem.
-	SupplyingComputerSystems common.Links
-	// SupplyingComputerSystemsCount is the number of SupplyingComputerSystems.
+	// SupplyingComputerSystems shall be an array of links to ComputerSystems that contribute, in whole or in part, to
+	// the implementation of this ComputerSystem.
+	SupplyingComputerSystems []ComputerSystem
+	// SupplyingComputerSystems@odata.count
 	SupplyingComputerSystemsCount int `json:"SupplyingComputerSystems@odata.count"`
+	// TrustedComponents shall contain an array of link to resources of type TrustedComponent.
+	TrustedComponents []TrustedComponent
+	// TrustedComponents@odata.count
+	TrustedComponentsCount int `json:"TrustedComponents@odata.count"`
 }
 
-// MemorySummary contains properties which describe the central memory for a system.
-type MemorySummary struct {
-	// MemoryMirroring is the ability and type of memory mirroring supported by this system.
-	MemoryMirroring MemoryMirroring
-	// Status is the status or health properties of the resource.
-	Status common.Status
-	// TotalSystemMemoryGiB is the amount of configured system general purpose
-	// volatile (RAM) memory as measured in gibibytes.
-	TotalSystemMemoryGiB float32
-	// TotalSystemPersistentMemoryGiB is the total amount of configured
-	// persistent memory available to the system as measured in gibibytes.
-	TotalSystemPersistentMemoryGiB float32
-}
-
-// ProcessorSummary is This type shall contain properties which describe
-// the central processors for a system.
-type ProcessorSummary struct {
-	// Count is the number of physical central processors in the system.
-	Count int
-	// LogicalProcessorCount is the number of logical central processors in the system.
-	LogicalProcessorCount int
-	// Model is the processor model for the central processors in the system,
-	// per the description in the Processor Information - Processor Family
-	// section of the SMBIOS Specification DSP0134 2.8 or later.
-	Model string
-	// Status is any status or health properties of the resource.
-	Status common.Status
-}
-
-// TrustedModules is This type shall describe a trusted module for a system.
-type TrustedModules struct {
-	// FirmwareVersion is the firmware version as
-	// defined by the manufacturer for the Trusted Module.
-	FirmwareVersion string
-	// FirmwareVersion2 is the 2nd firmware
-	// version, if applicable, as defined by the manufacturer for the Trusted
-	// Module.
-	FirmwareVersion2 string
-	// InterfaceType is the interface type of the installed Trusted Module.
-	InterfaceType InterfaceType
-	// InterfaceTypeSelection is the Interface
-	// Type Selection method (for example to switch between TPM1_2 and
-	// TPM2_0) that is supported by this TrustedModule.
-	InterfaceTypeSelection InterfaceTypeSelection
-	// Status is any status or health properties
-	// of the resource.
-	Status common.Status
-}
-
-// WatchdogTimer contains properties which describe the
-// host watchdog timer functionality for this ComputerSystem.
-type WatchdogTimer struct {
-	// FunctionEnabled shall indicate whether
-	// the host watchdog timer functionality has been enabled or not. This
-	// property indicates only that the functionality is enabled or disabled
-	// by the user, and updates to this property shall not initiate a
-	// watchdog timer countdown.
-	FunctionEnabled bool
-	// Status is any status or health properties of the resource.
-	Status struct {
-		State common.State
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
 	}
-	// TimeoutAction is the action to perform
-	// upon the  expiration of the Watchdog Timer.
-	TimeoutAction string
-	// WarningAction is the action to perform
-	// prior to the expiration of the Watchdog Timer. This action typically
-	// occurs 3-10 seconds prior to the timeout value, but the exact timing
-	// is dependent on the implementation.
-	WarningAction string
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// MemorySummary shall contain properties that describe the central memory for a system.
+type MemorySummary struct {
+	// MemoryMirroring shall contain the ability and type of memory mirroring that this computer system supports.
+	MemoryMirroring MemoryMirroring
+	// Metrics shall contain a link to the metrics associated with all memory in this system.
+	Metrics string
+	// TotalSystemMemoryGiB shall contain the amount of configured system general purpose volatile (RAM) memory as
+	// measured in gibibytes.
+	TotalSystemMemoryGiB float64
+	// TotalSystemPersistentMemoryGiB shall contain the total amount of configured persistent memory available to the
+	// system as measured in gibibytes.
+	TotalSystemPersistentMemoryGiB float64
+}
+
+// UnmarshalJSON unmarshals a MemorySummary object from the raw JSON.
+func (memorysummary *MemorySummary) UnmarshalJSON(b []byte) error {
+	type temp MemorySummary
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*memorysummary = MemorySummary(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
+}
+
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// ProcessorSummary shall contain properties that describe the central processors for a system. Processors
+// described by this type shall be limited to the processors that execute system code, and shall not include
+// processors used for offload functionality.
+type ProcessorSummary struct {
+	// CoreCount shall contain the total number of central processor cores in in the system.
+	CoreCount int
+	// Count shall contain the total number of physical central processors in the system.
+	Count int
+	// LogicalProcessorCount shall contain the total number of logical central processors in the system.
+	LogicalProcessorCount int
+	// Metrics shall contain a link to the metrics associated with all processors in this system.
+	Metrics string
+	// Model shall contain the processor model for the central processors in the system, per the description in the
+	// Processor Information - Processor Family section of the SMBIOS Specification DSP0134 2.8 or later.
+	Model string
+	// ThreadingEnabled shall indicate that all Processor resources in this system where the ProcessorType property
+	// contains 'CPU' have multiple threading support enabled.
+	ThreadingEnabled string
+}
+
+// UnmarshalJSON unmarshals a ProcessorSummary object from the raw JSON.
+func (processorsummary *ProcessorSummary) UnmarshalJSON(b []byte) error {
+	type temp ProcessorSummary
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*processorsummary = ProcessorSummary(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// SerialConsoleProtocol shall describe a serial console service for a computer system.
+type SerialConsoleProtocol struct {
+	// ConsoleEntryCommand shall contain a command string that can be provided by a client to select or enter the
+	// system's serial console, when the console is shared among several systems or a manager CLI.
+	ConsoleEntryCommand string
+	// HotKeySequenceDisplay shall contain a string that can be provided to a user to describe the hotkey sequence used
+	// to exit the serial console session, or, if shared with a manager CLI, to return to the CLI.
+	HotKeySequenceDisplay string
+	// Port shall contain the port assigned to the protocol.
+	Port int
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
+	// SharedWithManagerCLI shall indicate whether the serial console service is shared with access to the manager's
+	// command-line interface (CLI).
+	SharedWithManagerCLI string
+}
+
+// UnmarshalJSON unmarshals a SerialConsoleProtocol object from the raw JSON.
+func (serialconsoleprotocol *SerialConsoleProtocol) UnmarshalJSON(b []byte) error {
+	type temp SerialConsoleProtocol
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*serialconsoleprotocol = SerialConsoleProtocol(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// TrustedModules shall describe a Trusted Module for a system.
+type TrustedModules struct {
+	// FirmwareVersion shall contain the firmware version as defined by the manufacturer for the Trusted Module.
+	FirmwareVersion string
+	// FirmwareVersion2 shall contain the 2nd firmware version, if applicable, as defined by the manufacturer for the
+	// Trusted Module.
+	FirmwareVersion2 string
+	// InterfaceType shall contain the interface type of the installed Trusted Module.
+	InterfaceType InterfaceType
+	// InterfaceTypeSelection shall contain the interface type Selection method (for example to switch between TPM1_2
+	// and TPM2_0) that is supported by this TrustedModule.
+	InterfaceTypeSelection InterfaceTypeSelection
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// Status shall contain any status or health properties of the resource.
+	Status common.Status
+}
+
+// UnmarshalJSON unmarshals a TrustedModules object from the raw JSON.
+func (trustedmodules *TrustedModules) UnmarshalJSON(b []byte) error {
+	type temp TrustedModules
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*trustedmodules = TrustedModules(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// VirtualMediaConfig shall describe a virtual media service service for a computer system.
+type VirtualMediaConfig struct {
+	// Port shall contain the port assigned to the service.
+	Port int
+	// ServiceEnabled shall indicate whether the protocol for the service is enabled.
+	ServiceEnabled string
+}
+
+// UnmarshalJSON unmarshals a VirtualMediaConfig object from the raw JSON.
+func (virtualmediaconfig *VirtualMediaConfig) UnmarshalJSON(b []byte) error {
+	type temp VirtualMediaConfig
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*virtualmediaconfig = VirtualMediaConfig(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// WatchdogTimer shall contain properties that describe the host watchdog timer functionality for this
+// ComputerSystem.
+type WatchdogTimer struct {
+	// FunctionEnabled shall indicate whether a user has enabled the host watchdog timer functionality. This property
+	// indicates only that a user has enabled the timer. To activate the timer, installation of additional host-based
+	// software is necessary; an update to this property does not initiate the timer.
+	FunctionEnabled bool
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// Status shall contain any status or health properties of the resource.
+	Status common.Status
+	// TimeoutAction shall contain the action to perform when the watchdog timer reaches its timeout value.
+	TimeoutAction WatchdogTimeoutActions
+	// WarningAction shall contain the action to perform before the watchdog timer expires. This action typically
+	// occurs from three to ten seconds before to the timeout value, but the exact timing is dependent on the
+	// implementation.
+	WarningAction WatchdogWarningActions
+}
+
+// UnmarshalJSON unmarshals a WatchdogTimer object from the raw JSON.
+func (watchdogtimer *WatchdogTimer) UnmarshalJSON(b []byte) error {
+	type temp WatchdogTimer
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*watchdogtimer = WatchdogTimer(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }

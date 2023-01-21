@@ -7,12 +7,11 @@ package redfish
 import (
 	"encoding/json"
 	"reflect"
-	"sync"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
-// BaseModuleType is the type of module.
+// BaseModuleType is
 type BaseModuleType string
 
 const (
@@ -40,36 +39,33 @@ const (
 	DieBaseModuleType BaseModuleType = "Die"
 )
 
-// ErrorCorrection is the type of error correction used.
+// ErrorCorrection is
 type ErrorCorrection string
 
 const (
 	// NoECCErrorCorrection No ECC available.
 	NoECCErrorCorrection ErrorCorrection = "NoECC"
-	// SingleBitECCErrorCorrection Single bit Data error can be corrected by
-	// ECC.
+	// SingleBitECCErrorCorrection Single bit data errors can be corrected by ECC.
 	SingleBitECCErrorCorrection ErrorCorrection = "SingleBitECC"
-	// MultiBitECCErrorCorrection Multi-bit Data errors can be corrected by
-	// ECC.
+	// MultiBitECCErrorCorrection Multibit data errors can be corrected by ECC.
 	MultiBitECCErrorCorrection ErrorCorrection = "MultiBitECC"
-	// AddressParityErrorCorrection Address Parity errors can be corrected.
+	// AddressParityErrorCorrection Address parity errors can be corrected.
 	AddressParityErrorCorrection ErrorCorrection = "AddressParity"
 )
 
-// MemoryClassification is the memory classification.
+// MemoryClassification is
 type MemoryClassification string
 
 const (
 	// VolatileMemoryClassification Volatile memory.
 	VolatileMemoryClassification MemoryClassification = "Volatile"
-	// ByteAccessiblePersistentMemoryClassification Byte accessible
-	// persistent memory.
+	// ByteAccessiblePersistentMemoryClassification Byte-accessible persistent memory.
 	ByteAccessiblePersistentMemoryClassification MemoryClassification = "ByteAccessiblePersistent"
-	// BlockMemoryClassification Block accessible memory.
+	// BlockMemoryClassification Block-accessible memory.
 	BlockMemoryClassification MemoryClassification = "Block"
 )
 
-// MemoryDeviceType is the type of memory.
+// MemoryDeviceType is
 type MemoryDeviceType string
 
 const (
@@ -95,7 +91,7 @@ const (
 	DDR2SDRAMMemoryDeviceType MemoryDeviceType = "DDR2_SDRAM"
 	// DDR2SDRAMFBDIMMMemoryDeviceType DDR2 SDRAM FB_DIMM.
 	DDR2SDRAMFBDIMMMemoryDeviceType MemoryDeviceType = "DDR2_SDRAM_FB_DIMM"
-	// DDR2SDRAMFBDIMMPROBEMemoryDeviceType DDR2 SDRAM FBDIMM PROBE.
+	// DDR2SDRAMFBDIMMPROBEMemoryDeviceType DDR2 SDRAM FB_DIMM PROBE.
 	DDR2SDRAMFBDIMMPROBEMemoryDeviceType MemoryDeviceType = "DDR2_SDRAM_FB_DIMM_PROBE"
 	// DDRSGRAMMemoryDeviceType DDR SGRAM.
 	DDRSGRAMMemoryDeviceType MemoryDeviceType = "DDR_SGRAM"
@@ -115,11 +111,31 @@ const (
 	LogicalMemoryDeviceType MemoryDeviceType = "Logical"
 	// HBMMemoryDeviceType High Bandwidth Memory.
 	HBMMemoryDeviceType MemoryDeviceType = "HBM"
-	// HBM2MemoryDeviceType High Bandwidth Memory 2.
+	// HBM2MemoryDeviceType The second generation of High Bandwidth Memory.
 	HBM2MemoryDeviceType MemoryDeviceType = "HBM2"
+	// HBM3MemoryDeviceType The third generation of High Bandwidth Memory.
+	HBM3MemoryDeviceType MemoryDeviceType = "HBM3"
+	// GDDRMemoryDeviceType Synchronous graphics random-access memory.
+	GDDRMemoryDeviceType MemoryDeviceType = "GDDR"
+	// GDDR2MemoryDeviceType Double data rate type two synchronous graphics random-access memory.
+	GDDR2MemoryDeviceType MemoryDeviceType = "GDDR2"
+	// GDDR3MemoryDeviceType Double data rate type three synchronous graphics random-access memory.
+	GDDR3MemoryDeviceType MemoryDeviceType = "GDDR3"
+	// GDDR4MemoryDeviceType Double data rate type four synchronous graphics random-access memory.
+	GDDR4MemoryDeviceType MemoryDeviceType = "GDDR4"
+	// GDDR5MemoryDeviceType Double data rate type five synchronous graphics random-access memory.
+	GDDR5MemoryDeviceType MemoryDeviceType = "GDDR5"
+	// GDDR5XMemoryDeviceType Double data rate type five X synchronous graphics random-access memory.
+	GDDR5XMemoryDeviceType MemoryDeviceType = "GDDR5X"
+	// GDDR6MemoryDeviceType Double data rate type six synchronous graphics random-access memory.
+	GDDR6MemoryDeviceType MemoryDeviceType = "GDDR6"
+	// DDR5MemoryDeviceType Double data rate type five synchronous dynamic random-access memory.
+	DDR5MemoryDeviceType MemoryDeviceType = "DDR5"
+	// OEMMemoryDeviceType OEM-defined.
+	OEMMemoryDeviceType MemoryDeviceType = "OEM"
 )
 
-// MemoryMedia is media type.
+// MemoryMedia is
 type MemoryMedia string
 
 const (
@@ -133,203 +149,241 @@ const (
 	ProprietaryMemoryMedia MemoryMedia = "Proprietary"
 )
 
-// MemoryType is the type of memory.
+// MemoryType is
 type MemoryType string
 
 const (
-	// DRAMMemoryType shall represent volatile DRAM.
+	// DRAMMemoryType shall represent a volatile DRAM memory device.
 	DRAMMemoryType MemoryType = "DRAM"
-	// NVDIMMNMemoryType shall represent NVDIMMN as defined by JEDEC.
+	// NVDIMMNMemoryType shall represent an NVDIMM_N memory device as defined by JEDEC.
 	NVDIMMNMemoryType MemoryType = "NVDIMM_N"
-	// NVDIMMFMemoryType shall represent NVDIMMF as defined by JEDEC.
+	// NVDIMMFMemoryType shall represent an NVDIMM_F memory device as defined by JEDEC.
 	NVDIMMFMemoryType MemoryType = "NVDIMM_F"
-	// NVDIMMPMemoryType shall represent NVDIMMP as defined by JEDEC.
+	// NVDIMMPMemoryType shall represent an NVDIMM_P memory device as defined by JEDEC.
 	NVDIMMPMemoryType MemoryType = "NVDIMM_P"
-	// IntelOptaneMemoryType shall represent Intel Optane DC Persistent
-	// Memory.
+	// IntelOptaneMemoryType shall represent an Intel Optane Persistent Memory Module.
 	IntelOptaneMemoryType MemoryType = "IntelOptane"
 )
 
-// OperatingMemoryModes is is the memory operating mode.
+// OperatingMemoryModes is
 type OperatingMemoryModes string
 
 const (
 	// VolatileOperatingMemoryModes Volatile memory.
 	VolatileOperatingMemoryModes OperatingMemoryModes = "Volatile"
-	// PMEMOperatingMemoryModes Persistent memory, byte accessible through
-	// system address space.
+	// PMEMOperatingMemoryModes Persistent memory, byte-accessible through system address space.
 	PMEMOperatingMemoryModes OperatingMemoryModes = "PMEM"
-	// BlockOperatingMemoryModes Block accessible system memory.
+	// BlockOperatingMemoryModes Block-accessible system memory.
 	BlockOperatingMemoryModes OperatingMemoryModes = "Block"
 )
 
-// SecurityStates is memory security state.
+// SecurityStates is
 type SecurityStates string
 
 const (
-	// EnabledSecurityStates Secure mode is enabled and access to the data is
-	// allowed.
+	// EnabledSecurityStates Secure mode is enabled and access to the data is allowed.
 	EnabledSecurityStates SecurityStates = "Enabled"
 	// DisabledSecurityStates Secure mode is disabled.
 	DisabledSecurityStates SecurityStates = "Disabled"
-	// UnlockedSecurityStates Secure mode is enabled and access to the data
-	// is unlocked.
+	// UnlockedSecurityStates Secure mode is enabled and access to the data is unlocked.
 	UnlockedSecurityStates SecurityStates = "Unlocked"
-	// LockedSecurityStates Secure mode is enabled and access to the data is
-	// locked.
+	// LockedSecurityStates Secure mode is enabled and access to the data is locked.
 	LockedSecurityStates SecurityStates = "Locked"
-	// FrozenSecurityStates Secure state is frozen and can not be modified
-	// until reset.
+	// FrozenSecurityStates Secure state is frozen and cannot be modified until reset.
 	FrozenSecurityStates SecurityStates = "Frozen"
-	// PassphraselimitSecurityStates Number of attempts to unlock the Memory
-	// exceeded limit.
+	// PassphraselimitSecurityStates Number of attempts to unlock the memory exceeded limit.
 	PassphraselimitSecurityStates SecurityStates = "Passphraselimit"
 )
 
-// Memory is used to represent the Memory in a Redfish implementation.
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// Batteries shall contain an array of links to resources of type Battery that represent the batteries that provide
+	// power to this memory device during a power loss event, such as with battery-backed NVDIMMs. This property shall
+	// not be present if the batteries power the containing chassis as a whole rather than the individual memory
+	// device.
+	Batteries []Battery
+	// Batteries@odata.count
+	BatteriesCount int `json:"Batteries@odata.count"`
+	// Chassis shall contain a link to a resource of type Chassis that represents the physical container associated
+	// with this memory device.
+	Chassis string
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// Processors shall contain an array of links to resources of type Processor that are associated with this memory
+	// device.
+	Processors []Processor
+	// Processors@odata.count
+	ProcessorsCount int `json:"Processors@odata.count"`
+}
+
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Memory shall represent a memory device in a Redfish implementation.
 type Memory struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-	// AllocationAlignmentMiB shall be the alignment boundary on which memory
-	// regions are allocated, measured in MiB.
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// AllocationAlignmentMiB shall contain the alignment boundary on which memory regions are allocated, measured in
+	// MiB.
 	AllocationAlignmentMiB int
-	// AllocationIncrementMiB shall be the allocation increment for regions,
-	// measured in MiB.
+	// AllocationIncrementMiB shall contain the allocation increment for regions, measured in MiB.
 	AllocationIncrementMiB int
-	// AllowedSpeedsMHz shall be the speed supported by this Memory (in MHz).
-	AllowedSpeedsMHz []int
-	// Assembly shall be a link to a resource of type Assembly.
-	assembly string
-	// BaseModuleType shall be the base module type of Memory.
+	// AllowedSpeedsMHz shall contain the speed supported by this memory device.
+	AllowedSpeedsMHz []string
+	// Assembly shall contain a link to a resource of type Assembly.
+	Assembly string
+	// BaseModuleType shall contain the base module type of the memory device.
 	BaseModuleType BaseModuleType
-	// BusWidthBits shall be the bus width in bits.
+	// BusWidthBits shall contain the bus width, in bits.
 	BusWidthBits int
-	// CacheSizeMiB shall be the total size of the cache portion memory in MiB.
+	// CacheSizeMiB shall contain the total size of the cache portion memory in MiB.
 	CacheSizeMiB int
-	// CapacityMiB shall be the Memory capacity in MiB.
+	// CapacityMiB shall contain the memory capacity in MiB.
 	CapacityMiB int
-	// ConfigurationLocked shall be the current configuration lock state of this
-	// memory. True shall indicate that the configuration is locked and cannot
-	// be altered. False shall indicate that the configuration is not locked and
-	// may be altered.
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
+	// ConfigurationLocked shall indicate whether the configuration of this memory device is locked and cannot be
+	// altered.
 	ConfigurationLocked bool
-	// DataWidthBits shall be the data width in bits.
+	// DataWidthBits shall contain the data width in bits.
 	DataWidthBits int
 	// Description provides a description of this resource.
 	Description string
-	// DeviceLocator shall be location of the Memory in the platform, typically
-	// marked in the silk screen.
-	DeviceLocator string
-	// ErrorCorrection shall be the error correction scheme supported for this memory.
+	// Enabled shall indicate if this memory is enabled.
+	Enabled string
+	// EnvironmentMetrics shall contain a link to a resource of type EnvironmentMetrics that specifies the environment
+	// metrics for this memory.
+	EnvironmentMetrics string
+	// ErrorCorrection shall contain the error correction scheme supported for this memory device.
 	ErrorCorrection ErrorCorrection
-	// FirmwareAPIVersion shall be the version of API supported by the firmware.
-	FirmwareAPIVersion string `json:"FirmwareApiVersion"`
-	// FirmwareRevision shall be the revision of firmware on the Memory controller.
+	// FirmwareApiVersion shall contain the version of API supported by the firmware.
+	FirmwareApiVersion string
+	// FirmwareRevision shall contain the revision of firmware on the memory controller.
 	FirmwareRevision string
-	// IsRankSpareEnabled shall be true if a rank spare is enabled for this Memory.
+	// IsRankSpareEnabled shall indicate whether rank spare is enabled for this memory device.
 	IsRankSpareEnabled bool
-	// IsSpareDeviceEnabled shall be true if a spare device is enabled for this Memory.
+	// IsSpareDeviceEnabled shall indicate whether the spare device is enabled.
 	IsSpareDeviceEnabled bool
-	// Location shall contain location information of the associated memory.
-	Location common.Location
-	// LogicalSizeMiB shall be the total size of the logical memory in MiB.
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// Location shall contain location information of the associated memory device.
+	Location string
+	// LocationIndicatorActive shall contain the state of the indicator used to physically identify or locate this
+	// resource. A write to this property shall update the value of IndicatorLED in this resource, if supported, to
+	// reflect the implementation of the locating function.
+	LocationIndicatorActive bool
+	// Log shall contain a link to a resource of type LogService.
+	Log string
+	// LogicalSizeMiB shall contain the total size of the logical memory in MiB.
 	LogicalSizeMiB int
-	// Manufacturer shall contain a string which identifies the manufacturer of the Memory.
+	// Manufacturer shall contain the manufacturer of the memory device.
 	Manufacturer string
-	// MaxTDPMilliWatts shall be the maximum power budgets supported by the
-	// Memory in milli Watts.
-	MaxTDPMilliWatts []int
-	// MemoryDeviceType shall be the Memory Device Type as defined by SMBIOS.
+	// MaxTDPMilliWatts shall contain an array of maximum power budgets supported by the memory device in milliwatts.
+	MaxTDPMilliWatts []string
+	// MemoryDeviceType shall contain the Memory Device Type as defined by SMBIOS.
 	MemoryDeviceType MemoryDeviceType
-	// MemoryLocation shall contain properties which describe the Memory
-	// connection information to sockets and memory controllers.
-	MemoryLocation MemoryLocation
-	// MemoryMedia shall be the media types of this Memory.
+	// MemoryLocation shall contain properties that describe the memory connection information to sockets and memory
+	// controllers.
+	MemoryLocation string
+	// MemoryMedia shall contain the media types of this memory device.
 	MemoryMedia []MemoryMedia
-	// MemorySubsystemControllerManufacturerID shall be the two byte
-	// manufacturer ID of the memory subsystem controller of this memory module
-	// as defined by JEDEC in JEP-106.
+	// MemorySubsystemControllerManufacturerID shall contain the two byte manufacturer ID of the memory subsystem
+	// controller of this memory device as defined by JEDEC in JEP-106.
 	MemorySubsystemControllerManufacturerID string
-	// MemorySubsystemControllerProductID shall
-	// be the two byte product ID of the memory subsystem controller of this
-	// memory module as defined by the manufacturer.
+	// MemorySubsystemControllerProductID shall contain the two byte product ID of the memory subsystem controller of
+	// this memory device as defined by the manufacturer.
 	MemorySubsystemControllerProductID string
-	// MemoryType shall be the type of Memory
-	// represented by this resource.
+	// MemoryType shall contain the type of memory device that this resource represents.
 	MemoryType MemoryType
-	// Metrics is a reference to the Metrics associated with this Memory.
-	metrics string
-	// ModuleManufacturerID shall be the two byte manufacturer ID of this memory
-	// module as defined by JEDEC in JEP-106.
+	// Metrics The link to the metrics associated with this memory device.
+	Metrics string
+	// Model shall indicate the model information as provided by the manufacturer of this memory.
+	Model string
+	// ModuleManufacturerID shall contain the two byte manufacturer ID of this memory device as defined by JEDEC in
+	// JEP-106.
 	ModuleManufacturerID string
-	// ModuleProductID shall be the two byte
-	// product ID of this memory module as defined by the manufacturer.
+	// ModuleProductID shall contain the two byte product ID of this memory device as defined by the manufacturer.
 	ModuleProductID string
-	// NonVolatileSizeMiB shall be the total
-	// size of the non-volatile portion memory in MiB.
+	// NonVolatileSizeMiB shall contain the total size of the non-volatile portion memory in MiB.
 	NonVolatileSizeMiB int
-	// OperatingMemoryModes shall be the memory
-	// modes supported by the Memory.
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// OperatingMemoryModes shall contain the memory modes supported by the memory device.
 	OperatingMemoryModes []OperatingMemoryModes
-	// OperatingSpeedMhz shall be the operating
-	// speed of Memory in MHz or MT/s (mega-transfers per second) as reported
-	// by the memory device. Memory devices which operate at their bus speed
-	// shall report the operating speed in MHz (bus speed), while memory
-	// device which transfer data faster than their bus speed (e.g. DDR
-	// memory) shall report the operating speed in MT/s (mega-
-	// transfers/second). In any case, the reported value shall match the
-	// conventionally reported values for the technology utilized by the
-	// memory device.
+	// OperatingSpeedMhz shall contain the operating speed of the memory device in MHz or MT/s (mega-transfers per
+	// second) as reported by the memory device. Memory devices that operate at their bus speed shall report the
+	// operating speed in MHz (bus speed), while memory devices that transfer data faster than their bus speed, such as
+	// DDR memory, shall report the operating speed in MT/s (mega-transfers/second). The reported value shall match the
+	// conventionally reported values for the technology used by the memory device.
 	OperatingSpeedMhz int
-	// PartNumber shall indicate the part number as provided by the manufacturer
-	// of this Memory.
+	// OperatingSpeedRangeMHz shall contain the operating speed control, in megahertz units, for this resource. The
+	// value of the DataSourceUri property, if present, shall reference a resource of type Control with the ControlType
+	// property containing the value of 'FrequencyMHz'.
+	OperatingSpeedRangeMHz ControlRangeExcerpt
+	// PartNumber shall indicate the part number as provided by the manufacturer of this memory device.
 	PartNumber string
-	// PersistentRegionNumberLimit shall be the total number of persistent
-	// regions this Memory can support.
+	// PersistentRegionNumberLimit shall contain the total number of persistent regions this memory device can support.
 	PersistentRegionNumberLimit int
-	// PersistentRegionSizeLimitMiB shall be the total size of persistent regions in MiB.
+	// PersistentRegionSizeLimitMiB shall contain the total size of persistent regions in MiB.
 	PersistentRegionSizeLimitMiB int
-	// PersistentRegionSizeMaxMiB shall be the maximum size of a single persistent
-	// regions in MiB.
+	// PersistentRegionSizeMaxMiB shall contain the maximum size of a single persistent regions in MiB.
 	PersistentRegionSizeMaxMiB int
-	// PowerManagementPolicy shall contain properties which describe the power
-	// management policy for the current resource.
-	PowerManagementPolicy PowerManagementPolicy
-	// RankCount is used for spare or interleave.
+	// PowerManagementPolicy shall contain properties that describe the power management policy for this resource.
+	PowerManagementPolicy string
+	// RankCount shall contain the number of ranks available in the memory device. The ranks could be used for spare or
+	// interleave.
 	RankCount int
-	// Regions shall be the memory region information within the Memory.
+	// Regions shall contain the memory region information within the memory device.
 	Regions []RegionSet
-	// SecurityCapabilities shall contain properties which describe the security
-	// capabilities of the Memory.
-	SecurityCapabilities SecurityCapabilities
-	// SecurityState shall be the current security state of this memory.
+	// SecurityCapabilities shall contain properties that describe the security capabilities of the memory device.
+	SecurityCapabilities string
+	// SecurityState shall contain the current security state of this memory device.
 	SecurityState SecurityStates
-	// SerialNumber shall indicate the serial number as provided by the
-	// manufacturer of this Memory.
+	// SerialNumber shall indicate the serial number as provided by the manufacturer of this memory device.
 	SerialNumber string
-	// SpareDeviceCount is used spare devices available in the Memory. If
-	// memory devices fails, the spare device could be used.
+	// SpareDeviceCount shall contain the number of unused spare devices available in the memory device. If memory
+	// devices fails, the spare device could be used.
 	SpareDeviceCount int
-	// Status shall contain any status or health properties
-	// of the resource.
+	// SparePartNumber shall contain the spare part number of the memory.
+	SparePartNumber string
+	// Status shall contain any status or health properties of the resource.
 	Status common.Status
-	// VolatileRegionNumberLimit shall be the total number of volatile regions
-	// this Memory can support.
+	// VolatileRegionNumberLimit shall contain the total number of volatile regions this memory device can support.
 	VolatileRegionNumberLimit int
-	// VolatileRegionSizeLimitMiB shall be the total size of volatile regions in MiB.
+	// VolatileRegionSizeLimitMiB shall contain the total size of volatile regions in MiB.
 	VolatileRegionSizeLimitMiB int
-	// VolatileRegionSizeMaxMiB shall be the maximum size of a single volatile
-	// regions in MiB.
+	// VolatileRegionSizeMaxMiB shall contain the maximum size of a single volatile regions in MiB.
 	VolatileRegionSizeMaxMiB int
-	// VolatileSizeMiB shall be the total size of the volatile portion memory in MiB.
+	// VolatileSizeMiB shall contain the total size of the volatile portion memory in MiB.
 	VolatileSizeMiB int
-	// Chassis shall be a reference to a resource of type Chassis that represent
-	// the physical container associated with this Memory.
-	chassis string
 	// rawData holds the original serialized JSON so we can compare updates.
 	rawData []byte
 }
@@ -337,14 +391,8 @@ type Memory struct {
 // UnmarshalJSON unmarshals a Memory object from the raw JSON.
 func (memory *Memory) UnmarshalJSON(b []byte) error {
 	type temp Memory
-	type links struct {
-		Chassis common.Link
-	}
 	var t struct {
 		temp
-		Links    links
-		Assembly common.Link
-		Metrics  common.Link
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -355,9 +403,6 @@ func (memory *Memory) UnmarshalJSON(b []byte) error {
 	*memory = Memory(t.temp)
 
 	// Extract the links to other entities for later
-	memory.assembly = string(t.Assembly)
-	memory.metrics = string(t.Metrics)
-	memory.chassis = string(t.Links.Chassis)
 
 	// This is a read/write object, so we need to save the raw object data for later
 	memory.rawData = b
@@ -367,15 +412,16 @@ func (memory *Memory) UnmarshalJSON(b []byte) error {
 
 // Update commits updates to this object's properties to the running system.
 func (memory *Memory) Update() error {
+
 	// Get a representation of the object's original state so we can find what
 	// to update.
 	original := new(Memory)
-	err := original.UnmarshalJSON(memory.rawData)
-	if err != nil {
-		return err
-	}
+	original.UnmarshalJSON(memory.rawData)
 
 	readWriteFields := []string{
+		"Enabled",
+		"LocationIndicatorActive",
+		"OperatingSpeedRangeMHz",
 		"SecurityState",
 	}
 
@@ -405,141 +451,184 @@ func GetMemory(c common.Client, uri string) (*Memory, error) {
 
 // ListReferencedMemorys gets the collection of Memory from
 // a provided reference.
-func ListReferencedMemorys(c common.Client, collectionLink string) ([]*Memory, error) {
+func ListReferencedMemorys(c common.Client, link string) ([]*Memory, error) {
 	var result []*Memory
-	if collectionLink == "" {
+	if link == "" {
 		return result, nil
 	}
 
-	links, err := common.GetCollection(c, collectionLink)
+	links, err := common.GetCollection(c, link)
 	if err != nil {
 		return result, err
 	}
 
-	type GetMemoryResult struct {
-		Item  *Memory
-		Link  string
-		Error error
-	}
-
-	ch := make(chan GetMemoryResult)
-	var wg sync.WaitGroup
-
 	collectionError := common.NewCollectionError()
 	for _, memoryLink := range links.ItemLinks {
-		wg.Add(1)
-		go func(link string) {
-			defer wg.Done()
-			memory, err := GetMemory(c, link)
-			ch <- GetMemoryResult{Item: memory, Link: link, Error: err}
-		}(memoryLink)
-	}
-
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for r := range ch {
-		if r.Error != nil {
-			collectionError.Failures[r.Link] = r.Error
+		memory, err := GetMemory(c, memoryLink)
+		if err != nil {
+			collectionError.Failures[memoryLink] = err
 		} else {
-			result = append(result, r.Item)
+			result = append(result, memory)
 		}
 	}
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
 	}
-
-	return result, collectionError
 }
 
-// Assembly gets this memory's assembly.
-func (memory *Memory) Assembly() (*Assembly, error) {
-	if memory.assembly == "" {
-		return nil, nil
-	}
-	return GetAssembly(memory.Client, memory.assembly)
-}
-
-// Metrics gets the memory metrics.
-func (memory *Memory) Metrics() (*MemoryMetrics, error) {
-	if memory.metrics == "" {
-		return nil, nil
-	}
-	return GetMemoryMetrics(memory.Client, memory.metrics)
-}
-
-// Chassis gets the containing chassis of this memory.
-func (memory *Memory) Chassis() (*Chassis, error) {
-	if memory.chassis == "" {
-		return nil, nil
-	}
-	return GetChassis(memory.Client, memory.chassis)
-}
-
-// MemoryLocation shall contain properties which describe the Memory connection
-// information to sockets and memory controllers.
+// MemoryLocation shall contain properties that describe the memory connection information to sockets and memory
+// controllers.
 type MemoryLocation struct {
-	// Channel is Channel number in which Memory is connected.
+	// Channel shall contain the channel number to which the memory device is connected.
 	Channel int
-	// MemoryController is Memory controller number in which Memory is
-	// connected.
+	// MemoryController shall contain the memory controller number to which the memory device is connected.
 	MemoryController int
-	// Slot is Slot number in which Memory is connected.
+	// Slot shall contain the slot number to which the memory device is connected.
 	Slot int
-	// Socket is Socket number in which Memory is connected.
+	// Socket shall contain the socket number to which the memory device is connected.
 	Socket int
 }
 
-// PowerManagementPolicy shall contain properties which describe the power
-// management policy for the current resource.
+// UnmarshalJSON unmarshals a MemoryLocation object from the raw JSON.
+func (memorylocation *MemoryLocation) UnmarshalJSON(b []byte) error {
+	type temp MemoryLocation
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*memorylocation = MemoryLocation(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
+}
+
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// PowerManagementPolicy shall contain properties that describe the power management policy for this resource.
 type PowerManagementPolicy struct {
-	// AveragePowerBudgetMilliWatts is Average power budget in milli watts.
+	// AveragePowerBudgetMilliWatts shall contain the average power budget, in milliwatts.
 	AveragePowerBudgetMilliWatts int
-	// MaxTDPMilliWatts is Maximum TDP in milli watts.
+	// MaxTDPMilliWatts shall contain the maximum TDP in milliwatts.
 	MaxTDPMilliWatts int
-	// PeakPowerBudgetMilliWatts is Peak power budget in milli watts.
+	// PeakPowerBudgetMilliWatts shall contain the peak power budget, in milliwatts.
 	PeakPowerBudgetMilliWatts int
-	// PolicyEnabled is Power management policy enabled status.
+	// PolicyEnabled shall indicate whether the power management policy is enabled.
 	PolicyEnabled bool
 }
 
-// RegionSet shall describe the memory region information within a Memory entity.
+// UnmarshalJSON unmarshals a PowerManagementPolicy object from the raw JSON.
+func (powermanagementpolicy *PowerManagementPolicy) UnmarshalJSON(b []byte) error {
+	type temp PowerManagementPolicy
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*powermanagementpolicy = PowerManagementPolicy(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// RegionSet shall describe the memory region information within a memory device.
 type RegionSet struct {
-	// MemoryClassification is Classification of memory occupied by the given
-	// memory region.
+	// MemoryClassification shall contain the classification of memory that the memory region occupies.
 	MemoryClassification MemoryClassification
-	// OffsetMiB is Offset with in the Memory that corresponds to the
-	// starting of this memory region in MiB.
+	// OffsetMiB shall contain the offset within the memory that corresponds to the start of this memory region in MiB.
 	OffsetMiB int
-	// PassphraseEnabled shall be a boolean
-	// indicating if the passphrase is enabled for this region.
+	// PassphraseEnabled shall indicate whether the passphrase is enabled for this region.
 	PassphraseEnabled bool
-	// RegionID is Unique region ID representing a specific region within the
-	// Memory.
-	RegionID string `json:"RegionId"`
-	// SizeMiB is Size of this memory region in MiB.
+	// RegionId shall contain the unique region ID representing a specific region within the memory device.
+	RegionId string
+	// SizeMiB shall contain the size of this memory region in MiB.
 	SizeMiB int
 }
 
-// SecurityCapabilities shall contain properties which describe the security
-// capabilities of a Memory entity.
+// UnmarshalJSON unmarshals a RegionSet object from the raw JSON.
+func (regionset *RegionSet) UnmarshalJSON(b []byte) error {
+	type temp RegionSet
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*regionset = RegionSet(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// SecurityCapabilities shall contain properties that describe the security capabilities of a memory device.
 type SecurityCapabilities struct {
-	// ConfigurationLockCapable shall indicate whether this memory supports the
-	// locking (freezing) of the configuration.
+	// ConfigurationLockCapable shall indicate whether this memory device supports the locking, or freezing, of the
+	// configuration.
 	ConfigurationLockCapable bool
-	// DataLockCapable shall indicate whether this memory supports the locking
-	// of data access.
+	// DataLockCapable shall indicate whether this memory device supports the locking of data access.
 	DataLockCapable bool
-	// MaxPassphraseCount is Maximum number of passphrases supported for this
-	// Memory.
+	// MaxPassphraseCount shall contain the maximum number of passphrases supported for this memory device.
 	MaxPassphraseCount int
-	// PassphraseCapable is Memory passphrase set capability.
+	// PassphraseCapable shall indicate whether the memory device is passphrase capable.
 	PassphraseCapable bool
-	// PassphraseLockLimit shall be the maximum number of incorrect passphrase
-	// access attempts allowed before access to data is locked. A value of zero
-	// shall indicate that there is no limit to the number of attempts.
+	// PassphraseLockLimit shall contain the maximum number of incorrect passphrase access attempts allowed before
+	// access to data is locked. If 0, the number of attempts is infinite.
 	PassphraseLockLimit int
+}
+
+// UnmarshalJSON unmarshals a SecurityCapabilities object from the raw JSON.
+func (securitycapabilities *SecurityCapabilities) UnmarshalJSON(b []byte) error {
+	type temp SecurityCapabilities
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*securitycapabilities = SecurityCapabilities(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }

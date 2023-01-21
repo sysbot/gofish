@@ -11,55 +11,63 @@ import (
 	"github.com/stmcginnis/gofish/common"
 )
 
-// PrivilegeType is the role privilege type.
-type PrivilegeType string
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
+}
 
-const (
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
+	}
 
-	// LoginPrivilegeType Can log in to the service and read Resources.
-	LoginPrivilegeType PrivilegeType = "Login"
-	// ConfigureManagerPrivilegeType Can configure managers.
-	ConfigureManagerPrivilegeType PrivilegeType = "ConfigureManager"
-	// ConfigureUsersPrivilegeType Can configure users and their accounts.
-	ConfigureUsersPrivilegeType PrivilegeType = "ConfigureUsers"
-	// ConfigureSelfPrivilegeType Can change the password for the current
-	// user account and log out of their own sessions.
-	ConfigureSelfPrivilegeType PrivilegeType = "ConfigureSelf"
-	// ConfigureComponentsPrivilegeType Can configure components that this
-	// service manages.
-	ConfigureComponentsPrivilegeType PrivilegeType = "ConfigureComponents"
-	// NoAuthPrivilegeType shall be used to indicate an operation does not
-	// require authentication.  This privilege shall not be used in Redfish
-	// Roles.
-	NoAuthPrivilegeType PrivilegeType = "NoAuth"
-)
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
 
-// Role represents the Redfish Role for the user account.
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Role This resource represents the Redfish role for the user account.
 type Role struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-	// AssignedPrivileges shall contain the Redfish
-	// privileges for this Role. For predefined Roles, this property shall
-	// be read-only. For custom Roles, some implementations may not allow
-	// writing to this property.
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// AlternateRoleId shall contain a non-restricted 'RoleId' intended to be used in its place when the Restricted
+	// property contains the value 'true'.
+	AlternateRoleId string
+	// AssignedPrivileges shall contain the Redfish privileges for this role. For predefined roles, this property shall
+	// be read-only. For custom roles, some implementations may prevent writing to this property.
 	AssignedPrivileges []PrivilegeType
 	// Description provides a description of this resource.
 	Description string
-	// IsPredefined shall indicate whether the Role is a
-	// Redfish-predefined Role rather than a custom Redfish Role.
-	IsPredefined bool
-	// OemPrivileges shall contain the OEM privileges for
-	// this Role. For predefined Roles, this property shall be read-only.
-	// For custom Roles, some implementations may not allow writing to this
-	// property.
+	// IsPredefined shall indicate whether the role is predefined by Redfish or an OEM as contrasted with a client-
+	// defined role.
+	IsPredefined string
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// OemPrivileges shall contain the OEM privileges for this role. For predefined roles, this property shall be read-
+	// only. For custom roles, some implementations may prevent writing to this property.
 	OemPrivileges []string
-	// RoleID shall contain the string name of the Role.
-	// This property shall contain the same value as the Id property.
-	RoleID string `json:"RoleId"`
+	// Restricted shall indicate whether use of the role is restricted by a service as defined by the 'Restricted roles
+	// and restricted privileges' clause of the Redfish Specification. If this property is not present, the value shall
+	// be assumed to be 'false'.
+	Restricted string
+	// RoleId shall contain the string name of the role. This property shall contain the same value as the Id property.
+	RoleId string
 	// rawData holds the original serialized JSON so we can compare updates.
 	rawData []byte
 }
@@ -78,6 +86,8 @@ func (role *Role) UnmarshalJSON(b []byte) error {
 
 	*role = Role(t.temp)
 
+	// Extract the links to other entities for later
+
 	// This is a read/write object, so we need to save the raw object data for later
 	role.rawData = b
 
@@ -86,13 +96,11 @@ func (role *Role) UnmarshalJSON(b []byte) error {
 
 // Update commits updates to this object's properties to the running system.
 func (role *Role) Update() error {
+
 	// Get a representation of the object's original state so we can find what
 	// to update.
 	original := new(Role)
-	err := original.UnmarshalJSON(role.rawData)
-	if err != nil {
-		return err
-	}
+	original.UnmarshalJSON(role.rawData)
 
 	readWriteFields := []string{
 		"AssignedPrivileges",
@@ -125,7 +133,7 @@ func GetRole(c common.Client, uri string) (*Role, error) {
 
 // ListReferencedRoles gets the collection of Role from
 // a provided reference.
-func ListReferencedRoles(c common.Client, link string) ([]*Role, error) { //nolint:dupl
+func ListReferencedRoles(c common.Client, link string) ([]*Role, error) {
 	var result []*Role
 	if link == "" {
 		return result, nil
@@ -148,7 +156,7 @@ func ListReferencedRoles(c common.Client, link string) ([]*Role, error) { //noli
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
 	}
-
-	return result, collectionError
 }

@@ -11,76 +11,83 @@ import (
 	"github.com/stmcginnis/gofish/common"
 )
 
-// EncryptionAbility is the drive's encryption ability.
+// DataSanitizationType is
+type DataSanitizationType string
+
+const (
+	// BlockEraseDataSanitizationType shall indicate sanitization is performed by deleting all logical block addresses,
+	// including those that are not currently mapping to active addresses, but leaving the data on the drive.
+	BlockEraseDataSanitizationType DataSanitizationType = "BlockErase"
+	// CryptographicEraseDataSanitizationType shall indicate sanitization is performed by erasing the target data's
+	// encryption key leaving only the ciphertext on the drive. For more information, see NIST800-88 and ISO/IEC 27040.
+	CryptographicEraseDataSanitizationType DataSanitizationType = "CryptographicErase"
+	// OverwriteDataSanitizationType shall indicate sanitization is performed by overwriting data by writing an
+	// implementation specific pattern onto all sectors of the drive.
+	OverwriteDataSanitizationType DataSanitizationType = "Overwrite"
+)
+
+// EncryptionAbility is
 type EncryptionAbility string
 
 const (
-
-	// NoneEncryptionAbility indicates the drive is not capable of self encryption.
+	// NoneEncryptionAbility The drive is not capable of self-encryption.
 	NoneEncryptionAbility EncryptionAbility = "None"
-	// SelfEncryptingDriveEncryptionAbility indicates the drive is capable of self
-	// encryption per the Trusted Computing Group's Self Encrypting Drive
-	// Standard.
+	// SelfEncryptingDriveEncryptionAbility The drive is capable of self-encryption per the Trusted Computing Group's
+	// Self Encrypting Drive Standard.
 	SelfEncryptingDriveEncryptionAbility EncryptionAbility = "SelfEncryptingDrive"
-	// OtherEncryptionAbility indicates the drive is capable of self encryption through
-	// some other means.
+	// OtherEncryptionAbility The drive is capable of self-encryption through some other means.
 	OtherEncryptionAbility EncryptionAbility = "Other"
 )
 
-// EncryptionStatus is the drive's encryption state.
+// EncryptionStatus is
 type EncryptionStatus string
 
 const (
-	// UnecryptedEncryptionStatus indicates the drive is not currently encrypted.
-	// note: this typo occurred in the spec and was deprecated in redfish v1.1
+	// UnecryptedEncryptionStatus The drive is not currently encrypted.
 	UnecryptedEncryptionStatus EncryptionStatus = "Unecrypted"
-	// UnlockedEncryptionStatus indicates the drive is currently encrypted but the data
-	// is accessible to the user unencrypted.
+	// UnlockedEncryptionStatus The drive is currently encrypted but the data is accessible to the user in unencrypted
+	// form.
 	UnlockedEncryptionStatus EncryptionStatus = "Unlocked"
-	// LockedEncryptionStatus indicates the drive is currently encrypted and the data
-	// is not accessible to the user, however the system has the ability to
-	// unlock the drive automatically.
+	// LockedEncryptionStatus The drive is currently encrypted and the data is not accessible to the user. However, the
+	// system can unlock the drive automatically.
 	LockedEncryptionStatus EncryptionStatus = "Locked"
-	// ForeignEncryptionStatus indicates the drive is currently encrypted, the data is
-	// not accessible to the user, and the system requires user intervention
-	// to expose the data.
+	// ForeignEncryptionStatus The drive is currently encrypted, the data is not accessible to the user, and the system
+	// requires user intervention to expose the data.
 	ForeignEncryptionStatus EncryptionStatus = "Foreign"
-	// UnencryptedEncryptionStatus indicates the drive is not currently encrypted.
+	// UnencryptedEncryptionStatus The drive is not currently encrypted.
 	UnencryptedEncryptionStatus EncryptionStatus = "Unencrypted"
 )
 
-// HotspareReplacementModeType is the replacement operation mode of a hot spare.
+// HotspareReplacementModeType is
 type HotspareReplacementModeType string
 
 const (
-	// RevertibleHotspareReplacementModeType indicates the hot spare is drive that is
-	// commissioned due to a drive failure will revert to being a hotspare
-	// once the failed drive is replaced and rebuilt.
+	// RevertibleHotspareReplacementModeType The hot spare drive that is commissioned due to a drive failure reverts to
+	// a hot spare after the failed drive is replaced and rebuilt.
 	RevertibleHotspareReplacementModeType HotspareReplacementModeType = "Revertible"
-	// NonRevertibleHotspareReplacementModeType indicates the hot spare is drive that is
-	// commissioned due to a drive failure will remain as a data drive and
-	// will not revert to a hotspare if the failed drive is replaced.
+	// NonRevertibleHotspareReplacementModeType The hot spare drive that is commissioned due to a drive failure remains
+	// as a data drive and does not revert to a hot spare if the failed drive is replaced.
 	NonRevertibleHotspareReplacementModeType HotspareReplacementModeType = "NonRevertible"
 )
 
-// HotspareType is the type of hot spare.
+// HotspareType is
 type HotspareType string
 
 const (
-	// NoneHotspareType indicates the drive is not currently a hotspare.
+	// NoneHotspareType The drive is not a hot spare.
 	NoneHotspareType HotspareType = "None"
-	// GlobalHotspareType indicates the drive is currently serving as a hotspare for
-	// all other drives in the storage system.
+	// GlobalHotspareType The drive is serving as a hot spare for all other drives in this storage domain.
 	GlobalHotspareType HotspareType = "Global"
-	// ChassisHotspareType indicates the drive is currently serving as a hotspare for
-	// all other drives in the chassis.
+	// ChassisHotspareType The drive is serving as a hot spare for all other drives in this storage domain that are
+	// contained in the same chassis.
 	ChassisHotspareType HotspareType = "Chassis"
-	// DedicatedHotspareType indicates the drive is currently serving as a hotspare for
-	// a user defined set of drives.
+	// DedicatedHotspareType The drive is serving as a hot spare for a user-defined set of drives or volumes. Clients
+	// cannot specify this value when modifying the HotspareType property. This value is reported as a result of
+	// configuring the spare drives within a volume.
 	DedicatedHotspareType HotspareType = "Dedicated"
 )
 
-// MediaType is the drive's type.
+// MediaType is
 type MediaType string
 
 const (
@@ -92,145 +99,122 @@ const (
 	SMRMediaType MediaType = "SMR"
 )
 
-// StatusIndicator is the drive's status.
+// StatusIndicator is
 type StatusIndicator string
 
 const (
-	// OKStatusIndicator indicates the drive is OK.
+	// OKStatusIndicator The drive is OK.
 	OKStatusIndicator StatusIndicator = "OK"
 	// FailStatusIndicator The drive has failed.
 	FailStatusIndicator StatusIndicator = "Fail"
-	// RebuildStatusIndicator indicates the drive is being rebuilt.
+	// RebuildStatusIndicator The drive is being rebuilt.
 	RebuildStatusIndicator StatusIndicator = "Rebuild"
-	// PredictiveFailureAnalysisStatusIndicator indicates the drive is still working
-	// but predicted to fail soon.
+	// PredictiveFailureAnalysisStatusIndicator The drive still works but is predicted to fail soon.
 	PredictiveFailureAnalysisStatusIndicator StatusIndicator = "PredictiveFailureAnalysis"
-	// HotspareStatusIndicator indicates the drive is marked to be automatically
-	// rebuilt and used as a replacement for a failed drive.
+	// HotspareStatusIndicator The drive has been marked to automatically rebuild and replace a failed drive.
 	HotspareStatusIndicator StatusIndicator = "Hotspare"
-	// InACriticalArrayStatusIndicator The array that this drive is a part of
-	// is degraded.
+	// InACriticalArrayStatusIndicator The array to which this drive belongs has been degraded.
 	InACriticalArrayStatusIndicator StatusIndicator = "InACriticalArray"
-	// InAFailedArrayStatusIndicator The array that this drive is a part of
-	// is failed.
+	// InAFailedArrayStatusIndicator The array to which this drive belongs has failed.
 	InAFailedArrayStatusIndicator StatusIndicator = "InAFailedArray"
 )
 
-// Drive is used to represent a disk drive or other physical storage
-// medium for a Redfish implementation.
+// Drive shall represent a drive or other physical storage medium for a Redfish implementation.
 type Drive struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-	// assembly shall be a link to a resource of type Assembly.
-	assembly string
-	// AssetTag is used to track the drive for inventory purposes.
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// Assembly shall contain a link to a resource of type Assembly.
+	Assembly string
+	// AssetTag shall track the drive for inventory purposes.
 	AssetTag string
-	// BlockSizeBytes shall contain size of the smallest addressable unit of the
-	// associated drive.
+	// BlockSizeBytes shall contain size of the smallest addressable unit of the associated drive.
 	BlockSizeBytes int
-	// CapableSpeedGbs shall contain fastest capable bus speed of the associated
+	// CapableSpeedGbs shall contain fastest capable bus speed, in gigabit per second (Gbit/s), of the associated
 	// drive.
-	CapableSpeedGbs float32
-	// CapacityBytes shall contain the raw size in bytes of the associated drive.
-	CapacityBytes int64
+	CapableSpeedGbs float64
+	// CapacityBytes shall contain the raw size, in bytes, of the associated drive.
+	CapacityBytes int
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
 	// Description provides a description of this resource.
 	Description string
-	// EncryptionAbility shall contain the encryption ability for the associated
-	// drive.
+	// EncryptionAbility shall contain the encryption ability for the associated drive.
 	EncryptionAbility EncryptionAbility
-	// EncryptionStatus shall contain the encryption status for the associated
-	// drive.
+	// EncryptionStatus shall contain the encryption status for the associated drive.
 	EncryptionStatus EncryptionStatus
-	// FailurePredicted shall contain failure information as defined by the
-	// manufacturer for the associated drive.
+	// EnvironmentMetrics shall contain a link to a resource of type EnvironmentMetrics that specifies the environment
+	// metrics for this drive.
+	EnvironmentMetrics string
+	// FailurePredicted shall indicate whether this drive currently predicts a manufacturer-defined failure.
 	FailurePredicted bool
-	// HotspareReplacementMode shall specify if a commissioned hotspare will
-	// continue to serve as a hotspare once the failed drive is replaced.
+	// HotspareReplacementMode shall indicate whether a commissioned hot spare continues to serve as a hot spare after
+	// the failed drive is replaced.
 	HotspareReplacementMode HotspareReplacementModeType
-	// HotspareType is used as part of a Volume.
+	// HotspareType shall contain the hot spare type for the associated drive. If the drive currently serves as a hot
+	// spare, its Status.State field shall be 'StandbySpare' and 'Enabled' when it is part of a volume.
 	HotspareType HotspareType
-	// Identifiers shall contain a list of all known durable
-	// names for the associated drive.
-	Identifiers []common.Identifier
-	// IndicatorLED shall contain the indicator light state for the indicator
-	// light associated with this drive.
-	IndicatorLED common.IndicatorLED
-	// Location shall contain location information of the associated drive.
-	Location []common.Location
-	// Manufacturer shall be the name of the organization responsible for
-	// producing the drive. This organization might be the entity from whom the
-	// drive is purchased, but this is not necessarily true.
+	// Identifiers shall contain a list of all known durable names for the associated drive.
+	Identifiers []Identifier
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// LocationIndicatorActive shall contain the state of the indicator used to physically identify or locate this
+	// resource. A write to this property shall update the value of IndicatorLED in this resource, if supported, to
+	// reflect the implementation of the locating function.
+	LocationIndicatorActive bool
+	// Manufacturer shall contain the name of the organization responsible for producing the drive. This organization
+	// may be the entity from whom the drive is purchased, but this is not necessarily true.
 	Manufacturer string
-	// MediaType shall contain the type of media contained in the associated
-	// drive.
+	// MediaType shall contain the type of media contained in the associated drive.
 	MediaType MediaType
-	// Model shall be the name by which the manufacturer generally refers to the
-	// drive.
+	// Model shall contain the name by which the manufacturer generally refers to the drive.
 	Model string
-	// Multipath shall indicate whether the drive is
-	// accessible by an initiator from multiple paths allowing for failover
-	// capabilities upon a path failure.
+	// Multipath shall indicate whether the drive is accessible by an initiator from multiple paths allowing for
+	// failover capabilities upon a path failure.
 	Multipath bool
-	// NegotiatedSpeedGbs shall contain current bus speed of the associated
-	// drive.
-	NegotiatedSpeedGbs float32
-	// Operations shall contain a list of all operations currently running on
-	// the Drive.
-	Operations []common.Operations
-	// PartNumber shall be a part number assigned by the organization that is
-	// responsible for producing or manufacturing the drive.
+	// NegotiatedSpeedGbs shall contain current bus speed, in gigabit per second (Gbit/s), of the associated drive.
+	NegotiatedSpeedGbs float64
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// Operations shall contain a list of all operations currently running on the Drive.
+	Operations []Operations
+	// PartNumber shall contain the part number assigned by the organization that is responsible for producing or
+	// manufacturing the drive.
 	PartNumber string
-	// PhysicalLocation shall contain location information of the associated
-	// drive.
-	PhysicalLocation common.Location
-	// PredictedMediaLifeLeftPercent shall contain an indicator of the
-	// percentage of life remaining in the Drive's media.
-	PredictedMediaLifeLeftPercent float32
-	// Protocol shall contain the protocol the associated drive is using to
-	// communicate to the storage controller for this system.
-	Protocol common.Protocol
-	// Revision shall contain the revision as defined by the manufacturer for
-	// the associated drive.
+	// PhysicalLocation shall contain location information of the associated drive.
+	PhysicalLocation string
+	// PredictedMediaLifeLeftPercent shall contain an indicator of the percentage of life remaining in the drive's
+	// media.
+	PredictedMediaLifeLeftPercent float64
+	// Protocol shall contain the protocol that the associated drive currently uses to communicate to the storage
+	// controller for this system.
+	Protocol Protocol
+	// ReadyToRemove shall indicate whether the system is prepared for the removal of this drive.
+	ReadyToRemove bool
+	// Revision shall contain the manufacturer-defined revision for the associated drive.
 	Revision string
-	// RotationSpeedRPM shall contain rotation speed of the associated drive.
-	RotationSpeedRPM float32
-	// SKU shall be the stock-keeping unit number for this drive.
+	// RotationSpeedRPM shall contain the rotation speed, in revolutions per minute (RPM), of the associated drive.
+	RotationSpeedRPM float64
+	// SKU shall contain the stock-keeping unit (SKU) number for this drive.
 	SKU string
-	// SerialNumber is used to identify the drive.
+	// SerialNumber shall contain the manufacturer-allocated number that identifies the drive.
 	SerialNumber string
 	// Status shall contain any status or health properties of the resource.
 	Status common.Status
-	// StatusIndicator shall contain the status indicator state for the status
-	// indicator associated with this drive. The valid values for this property
-	// are specified through the Redfish.AllowableValues annotation.
+	// StatusIndicator shall contain the status indicator state for the status indicator associated with this drive.
+	// The Redfish.AllowableValues annotation specifies the valid values for this property.
 	StatusIndicator StatusIndicator
-	// WriteCacheEnabled shall indicate whether the drive
-	// write cache is enabled.
+	// WriteCacheEnabled shall indicate whether the drive write cache is enabled.
 	WriteCacheEnabled bool
-	// chassis shall be a reference to a resource of type Chassis that represent
-	// the physical container associated with this Drive.
-	chassis string
-	// endpoints shall be a reference to the resources that this drive is
-	// associated with and shall reference a resource of type Endpoint.
-	endpoints []string
-	// EndpointsCount is the number of endpoints.
-	EndpointsCount int `json:"Endpoints@odata.count"`
-	// volumes are the associated volumes.
-	volumes []string
-	// Volumes is the number of associated volumes.
-	VolumesCount int
-	// pcieFunctions are the associated PCIeFunction objects.
-	pcieFunctions []string
-	// PCIeFunctionCount is the number of PCIeFunctions.
-	PCIeFunctionCount int
-	// storagePools      []string
-	StoragePoolsCount int
-	// secureEraseTarget is the URL for SecureErase actions.
-	secureEraseTarget string
 	// rawData holds the original serialized JSON so we can compare updates.
 	rawData []byte
 }
@@ -238,31 +222,8 @@ type Drive struct {
 // UnmarshalJSON unmarshals a Drive object from the raw JSON.
 func (drive *Drive) UnmarshalJSON(b []byte) error {
 	type temp Drive
-	type links struct {
-		Chassis       common.Link
-		Endpoints     common.Links
-		EndpointCount int `json:"Endpoints@odata.count"`
-		// PCIeFunctions is The value of this property shall reference a resource
-		// of type PCIeFunction that represents the PCIe functions associated
-		// with this resource.
-		PCIeFunctions common.Links
-		// PCIeFunctions@odata.count is
-		PCIeFunctionsCount int `json:"PCIeFunctions@odata.count"`
-		StoragePools       common.Links
-		StoragePoolsCount  int `json:"StoragePools@odata.count"`
-		Volumes            common.Links
-		VolumeCount        int `json:"Volumes@odata.count"`
-	}
-	type Actions struct {
-		SecureErase struct {
-			Target string
-		} `json:"#Drive.SecureErase"`
-	}
 	var t struct {
 		temp
-		Links    links
-		Actions  Actions
-		Assembly common.Link
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -270,17 +231,9 @@ func (drive *Drive) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Extract the links to other entities for later
 	*drive = Drive(t.temp)
-	drive.assembly = string(t.Assembly)
-	drive.chassis = string(t.Links.Chassis)
-	drive.endpoints = t.Links.Endpoints.ToStrings()
-	drive.EndpointsCount = t.Links.EndpointCount
-	drive.volumes = t.Links.Volumes.ToStrings()
-	drive.VolumesCount = t.Links.VolumeCount
-	drive.pcieFunctions = t.Links.PCIeFunctions.ToStrings()
-	drive.PCIeFunctionCount = t.Links.PCIeFunctionsCount
-	drive.secureEraseTarget = t.Actions.SecureErase.Target
+
+	// Extract the links to other entities for later
 
 	// This is a read/write object, so we need to save the raw object data for later
 	drive.rawData = b
@@ -290,18 +243,18 @@ func (drive *Drive) UnmarshalJSON(b []byte) error {
 
 // Update commits updates to this object's properties to the running system.
 func (drive *Drive) Update() error {
+
 	// Get a representation of the object's original state so we can find what
 	// to update.
 	original := new(Drive)
-	err := original.UnmarshalJSON(drive.rawData)
-	if err != nil {
-		return err
-	}
+	original.UnmarshalJSON(drive.rawData)
 
 	readWriteFields := []string{
 		"AssetTag",
 		"HotspareReplacementMode",
-		"IndicatorLED",
+		"HotspareType",
+		"LocationIndicatorActive",
+		"ReadyToRemove",
 		"StatusIndicator",
 		"WriteCacheEnabled",
 	}
@@ -330,8 +283,9 @@ func GetDrive(c common.Client, uri string) (*Drive, error) {
 	return &drive, nil
 }
 
-// ListReferencedDrives gets the collection of Drives from a provided reference.
-func ListReferencedDrives(c common.Client, link string) ([]*Drive, error) { //nolint:dupl
+// ListReferencedDrives gets the collection of Drive from
+// a provided reference.
+func ListReferencedDrives(c common.Client, link string) ([]*Drive, error) {
 	var result []*Drive
 	if link == "" {
 		return result, nil
@@ -354,112 +308,117 @@ func ListReferencedDrives(c common.Client, link string) ([]*Drive, error) { //no
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
 	}
-
-	return result, collectionError
 }
 
-// Assembly gets the Assembly for this drive.
-func (drive *Drive) Assembly() (*Assembly, error) {
-	if drive.assembly == "" {
-		return nil, nil
-	}
-
-	return GetAssembly(drive.Client, drive.assembly)
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// Chassis shall contain a link to a resource of type Chassis that represents the physical container associated
+	// with this drive.
+	Chassis string
+	// Endpoints shall contain an array of links to resources of type Endpoint with which this drive is associated.
+	Endpoints []Endpoint
+	// Endpoints@odata.count
+	EndpointsCount int `json:"Endpoints@odata.count"`
+	// NetworkDeviceFunctions shall contain the array of links to resources of type NetworkDeviceFunction. This
+	// property should only be present for drives with network connectivity, such as Ethernet attached drives.
+	NetworkDeviceFunctions []NetworkDeviceFunction
+	// NetworkDeviceFunctions@odata.count
+	NetworkDeviceFunctionsCount int `json:"NetworkDeviceFunctions@odata.count"`
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PCIeFunctions shall link to a resource of type PCIeFunction that represents the PCIe functions associated with
+	// this resource.
+	PCIeFunctions []PCIeFunction
+	// PCIeFunctions@odata.count
+	PCIeFunctionsCount int `json:"PCIeFunctions@odata.count"`
+	// Storage shall contain a link to a resource of type Storage that represents the storage subsystem to which this
+	// drive belongs.
+	Storage string
+	// StoragePools shall contain an array of links of type StoragePool to which this drive belongs.
+	StoragePools []StoragePool
+	// StoragePools@odata.count
+	StoragePoolsCount int `json:"StoragePools@odata.count"`
+	// Volumes shall contain an array of links to resources of type Volume with which this drive is associated. This
+	// property shall include all volume resources of which this drive is a member and all volumes for which this drive
+	// acts as a spare if the hot spare type is 'Dedicated'.
+	Volumes []Volume
+	// Volumes@odata.count
+	VolumesCount int `json:"Volumes@odata.count"`
 }
 
-// Chassis gets the containing chassis for this drive.
-func (drive *Drive) Chassis() (*Chassis, error) {
-	if drive.chassis == "" {
-		return nil, nil
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
 	}
 
-	return GetChassis(drive.Client, drive.chassis)
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// Endpoints references the Endpoints that this drive is associated with.
-func (drive *Drive) Endpoints() ([]*Endpoint, error) {
-	var result []*Endpoint
-
-	collectionError := common.NewCollectionError()
-	for _, endpointLink := range drive.endpoints {
-		endpoint, err := GetEndpoint(drive.Client, endpointLink)
-		if err != nil {
-			collectionError.Failures[endpointLink] = err
-		} else {
-			result = append(result, endpoint)
-		}
-	}
-
-	if collectionError.Empty() {
-		return result, nil
-	}
-
-	return result, collectionError
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
 }
 
-// Volumes references the Volumes that this drive is associated with.
-func (drive *Drive) Volumes() ([]*Volume, error) {
-	var result []*Volume
-
-	collectionError := common.NewCollectionError()
-	for _, volumeLink := range drive.volumes {
-		volume, err := GetVolume(drive.Client, volumeLink)
-		if err != nil {
-			collectionError.Failures[volumeLink] = err
-		} else {
-			result = append(result, volume)
-		}
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
 	}
 
-	if collectionError.Empty() {
-		return result, nil
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
 	}
 
-	return result, collectionError
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// PCIeFunctions references the PCIeFunctions that this drive is associated with.
-func (drive *Drive) PCIeFunctions() ([]*PCIeFunction, error) {
-	var result []*PCIeFunction
-
-	collectionError := common.NewCollectionError()
-	for _, pcieFunctionLink := range drive.pcieFunctions {
-		pcieFunction, err := GetPCIeFunction(drive.Client, pcieFunctionLink)
-		if err != nil {
-			collectionError.Failures[pcieFunctionLink] = err
-		} else {
-			result = append(result, pcieFunction)
-		}
-	}
-
-	if collectionError.Empty() {
-		return result, nil
-	}
-
-	return result, collectionError
+// Operations shall describe a currently running operation on the resource.
+type Operations struct {
+	// AssociatedTask shall contain a link to a resource of type Task that represents the task associated with the
+	// operation.
+	AssociatedTask string
+	// OperationName shall contain a string of the name of the operation.
+	OperationName string
+	// PercentageComplete shall contain an integer of the percentage of the operation that has been completed.
+	PercentageComplete int
 }
 
-// // StoragePools references the StoragePools that this drive is associated with.
-// func (drive *Drive) StoragePools() ([]*StoragePools, error) {
-// 	var result []*StoragePools
-
-// 	for _, storagePoolLink := range drive.storagePools {
-// 		storagePool, err := GetStoragePools(drive.Client, storagePoolLink)
-// 		if err != nil {
-// 			return result, err
-// 		}
-// 		result = append(result, storagePool)
-// 	}
-
-// 	return result, nil
-// }
-
-// SecureErase shall perform a secure erase of the drive.
-func (drive *Drive) SecureErase() error {
-	resp, err := drive.Client.Post(drive.secureEraseTarget, nil)
-	if err == nil {
-		defer resp.Body.Close()
+// UnmarshalJSON unmarshals a Operations object from the raw JSON.
+func (operations *Operations) UnmarshalJSON(b []byte) error {
+	type temp Operations
+	var t struct {
+		temp
 	}
-	return err
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*operations = Operations(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }

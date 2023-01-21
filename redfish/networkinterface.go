@@ -6,39 +6,65 @@ package redfish
 
 import (
 	"encoding/json"
+	"reflect"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
-// NetworkInterfaceLinks references to resources that are related to, but not
-// contained by (subordinate to), this resource.
-type NetworkInterfaceLinks struct {
-	// NetworkAdapter shall be a reference to a
-	// resource of type NetworkAdapter that represents the physical container
-	// associated with this NetworkInterface.
-	NetworkAdapter common.Link
+// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+// resource.
+type Links struct {
+	// NetworkAdapter shall contain a link to a resource of type NetworkAdapter that represents the physical container
+	// associated with this network interface.
+	NetworkAdapter string
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
 }
 
-// A NetworkInterface contains references linking NetworkAdapter, NetworkPort,
-// and NetworkDeviceFunction resources and represents the functionality
-// available to the containing system.
+// UnmarshalJSON unmarshals a Links object from the raw JSON.
+func (links *Links) UnmarshalJSON(b []byte) error {
+	type temp Links
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*links = Links(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// NetworkInterface This resource contains links to the network adapters, network ports, and network device
+// functions, and represents the functionality available to the containing system.
 type NetworkInterface struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
+	// Actions shall contain the available actions for this resource.
+	Actions string
 	// Description provides a description of this resource.
 	Description string
-	// networkAdapter shall be a reference to a resource of type NetworkAdapter
-	// that represents the physical container associated with this NetworkInterface.
-	networkAdapter string
-	// networkDeviceFunctions shall be a link to a collection of type
-	// NetworkDeviceFunctionCollection.
-	networkDeviceFunctions string
-	// NetworkPorts shall be a link to a collection of type NetworkPortCollection.
-	networkPorts string
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// NetworkDeviceFunctions shall contain a link to a resource collection of type NetworkDeviceFunctionCollection.
+	NetworkDeviceFunctions string
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// Ports shall contain a link to a resource collection of type PortCollection.
+	Ports string
 	// Status shall contain any status or health properties of the resource.
 	Status common.Status
 }
@@ -48,9 +74,6 @@ func (networkinterface *NetworkInterface) UnmarshalJSON(b []byte) error {
 	type temp NetworkInterface
 	var t struct {
 		temp
-		NetworkDeviceFunctions common.Link
-		NetworkPorts           common.Link
-		Links                  NetworkInterfaceLinks
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -58,11 +81,9 @@ func (networkinterface *NetworkInterface) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Extract the links to other entities for later
 	*networkinterface = NetworkInterface(t.temp)
-	networkinterface.networkAdapter = string(t.Links.NetworkAdapter)
-	networkinterface.networkDeviceFunctions = string(t.NetworkDeviceFunctions)
-	networkinterface.networkPorts = string(t.NetworkPorts)
+
+	// Extract the links to other entities for later
 
 	return nil
 }
@@ -87,7 +108,7 @@ func GetNetworkInterface(c common.Client, uri string) (*NetworkInterface, error)
 
 // ListReferencedNetworkInterfaces gets the collection of NetworkInterface from
 // a provided reference.
-func ListReferencedNetworkInterfaces(c common.Client, link string) ([]*NetworkInterface, error) { //nolint:dupl
+func ListReferencedNetworkInterfaces(c common.Client, link string) ([]*NetworkInterface, error) {
 	var result []*NetworkInterface
 	if link == "" {
 		return result, nil
@@ -110,28 +131,30 @@ func ListReferencedNetworkInterfaces(c common.Client, link string) ([]*NetworkIn
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
+	}
+}
+
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
+}
+
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
 	}
 
-	return result, collectionError
-}
-
-// NetworkAdapter gets the NetworkAdapter for this interface.
-func (networkinterface *NetworkInterface) NetworkAdapter() (*NetworkAdapter, error) {
-	if networkinterface.networkAdapter == "" {
-		return nil, nil
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
 	}
 
-	return GetNetworkAdapter(networkinterface.Client, networkinterface.networkAdapter)
-}
+	*oemactions = OemActions(t.temp)
 
-// NetworkDeviceFunctions gets the collection of NetworkDeviceFunctions of this network interface
-func (networkinterface *NetworkInterface) NetworkDeviceFunctions() ([]*NetworkDeviceFunction, error) {
-	return ListReferencedNetworkDeviceFunctions(
-		networkinterface.Client, networkinterface.networkDeviceFunctions)
-}
+	// Extract the links to other entities for later
 
-// NetworkPorts gets the collection of NetworkPorts of this network interface
-func (networkinterface *NetworkInterface) NetworkPorts() ([]*NetworkPort, error) {
-	return ListReferencedNetworkPorts(
-		networkinterface.Client, networkinterface.networkPorts)
+	return nil
 }

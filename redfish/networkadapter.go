@@ -6,124 +6,115 @@ package redfish
 
 import (
 	"encoding/json"
+	"reflect"
 
 	"github.com/stmcginnis/gofish/common"
 )
 
 // ControllerCapabilities shall describe the capabilities of a controller.
 type ControllerCapabilities struct {
-	// DataCenterBridging shall contain capability, status,
-	// and configuration values related to Data Center Bridging (DCB) for
-	// this controller.
-	DataCenterBridging struct {
-		Capable bool
-	}
-	// NPAR shall contain capability, status, and
-	// configuration values related to NIC partitioning for this controller.
-	NPAR struct {
-		// NparCapable shall indicate the ability of a
-		// controller to support NIC function partitioning.
-		NparCapable bool
-		// NparEnabled shall indicate whether or not NIC
-		// function partitioning is active on this controller.
-		NparEnabled bool
-	}
-	// NPIV shall contain N_Port ID Virtualization (NPIV)
-	// capabilities for this controller.
-	NPIV struct {
-		// MaxDeviceLogins shall be the maximum
-		// number of N_Port ID Virtualization (NPIV) logins allowed
-		// simultaneously from all ports on this controller.
-		MaxDeviceLogins int
-		// MaxPortLogins shall be the maximum
-		// number of N_Port ID Virtualization (NPIV) logins allowed per physical
-		// port on this controller.
-		MaxPortLogins int
-	}
-	// NetworkDeviceFunctionCount shall be the
-	// number of physical functions available on this controller.
+	// DataCenterBridging shall contain capability, status, and configuration values related to data center bridging
+	// (DCB) for this controller.
+	DataCenterBridging string
+	// NPAR shall contain capability, status, and configuration values related to NIC partitioning for this controller.
+	NPAR string
+	// NPIV shall contain N_Port ID Virtualization (NPIV) capabilities for this controller.
+	NPIV string
+	// NetworkDeviceFunctionCount shall contain the number of physical functions available on this controller.
 	NetworkDeviceFunctionCount int
-	// NetworkPortCount shall be the number of
-	// physical ports on this controller.
+	// NetworkPortCount shall contain the number of physical ports on this controller.
 	NetworkPortCount int
-	// VirtualizationOffload shall contain capability, status,
-	// and configuration values related to virtualization offload for this
-	// controller.
-	VirtualizationOffload struct {
-		// SRIOV shall contain Single-Root Input/Output Virtualization (SR-IOV)
-		// capabilities.
-		SRIOV struct {
-			// SRIOVVEPACapable shall be a boolean indicating whether this
-			// controller supports Single Root Input/Output Virtualization
-			// (SR-IOV) in Virtual Ethernet Port Aggregator (VEPA) mode.
-			SRIOVVEPACapable bool
-		}
-		// VirtualFunction shall describe the capability, status, and
-		// configuration values related to the virtual function for this controller.
-		VirtualFunction struct {
-			// DeviceMaxCount shall be the maximum number of Virtual Functions
-			// (VFs) supported by this controller.
-			DeviceMaxCount int
-			// MinAssignmentGroupSize shall be the minimum number of Virtual
-			// Functions (VFs) that can be allocated or moved between physical
-			// functions for this controller.
-			MinAssignmentGroupSize int
-			// NetworkPortMaxCount shall be the maximum number of Virtual
-			// Functions (VFs) supported per network port for this controller.
-			NetworkPortMaxCount int
-		}
-	}
+	// VirtualizationOffload shall contain capability, status, and configuration values related to virtualization
+	// offload for this controller.
+	VirtualizationOffload string
 }
 
-// Controllers shall describe a network controller ASIC that makes up part of a
-// NetworkAdapter.
+// UnmarshalJSON unmarshals a ControllerCapabilities object from the raw JSON.
+func (controllercapabilities *ControllerCapabilities) UnmarshalJSON(b []byte) error {
+	type temp ControllerCapabilities
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*controllercapabilities = ControllerCapabilities(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// ControllerLinks shall contain links to resources that are related to but are not contained by, or subordinate
+// to, this resource.
+type ControllerLinks struct {
+	// NetworkDeviceFunctions shall contain an array of links to resources of type NetworkDeviceFunction that represent
+	// the network device functions associated with this network controller.
+	NetworkDeviceFunctions []NetworkDeviceFunction
+	// NetworkDeviceFunctions@odata.count
+	NetworkDeviceFunctionsCount int `json:"NetworkDeviceFunctions@odata.count"`
+	// NetworkPorts@odata.count
+	NetworkPortsCount int `json:"NetworkPorts@odata.count"`
+	// Oem shall contain the OEM extensions. All values for properties contained in this object shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PCIeDevices shall contain an array of links to resources of type PCIeDevice that represent the PCIe devices
+	// associated with this network controller.
+	PCIeDevices []PCIeDevice
+	// PCIeDevices@odata.count
+	PCIeDevicesCount int `json:"PCIeDevices@odata.count"`
+	// Ports shall contain an array of links to resources of type Port that represent the ports associated with this
+	// network controller.
+	Ports []Port
+	// Ports@odata.count
+	PortsCount int `json:"Ports@odata.count"`
+}
+
+// UnmarshalJSON unmarshals a ControllerLinks object from the raw JSON.
+func (controllerlinks *ControllerLinks) UnmarshalJSON(b []byte) error {
+	type temp ControllerLinks
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*controllerlinks = ControllerLinks(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// Controllers shall describe a network controller ASIC that makes up part of a network adapter.
 type Controllers struct {
 	// ControllerCapabilities shall contain the capabilities of this controller.
-	ControllerCapabilities ControllerCapabilities
-	// FirmwarePackageVersion shall be the version number of the user-facing
-	// firmware package.
+	ControllerCapabilities string
+	// FirmwarePackageVersion shall contain the version number of the user-facing firmware package.
 	FirmwarePackageVersion string
-	// Identifiers shall contain a list of all known durable names for the
-	// associated network adapter.
-	Identifiers []common.Identifier
-	// Location shall contain location information of the associated network
-	// adapter controller.
-	Location common.Location
-	// PCIeInterface is used to connect this PCIe-based controller to its host.
-	PCIeInterface PCIeInterface
-	// NetworkDeviceFunctions shall be an array of references of type
-	// NetworkDeviceFunction that represent the Network Device Functions
-	// associated with this Network Controller.
-	networkDeviceFunctions []string
-	// NetworkDeviceFunctionsCount is the number of network device functions.
-	NetworkDeviceFunctionsCount int
-	// NetworkPorts shall be an array of references of type NetworkPort that
-	// represent the Network Ports associated with this Network Controller.
-	networkPorts []string
-	// NetworkPortsCount is the number of network ports.
-	NetworkPortsCount int
-	// PCIeDevices shall be an array of references of type PCIeDevice that
-	// represent the PCI-e Devices associated with this Network Controller.
-	pcieDevices []string
-	// PCIeDevicesCount is the number of PCIeDevices.
-	PCIeDevicesCount int
+	// Identifiers shall contain a list of all known durable names for the controller associated with the network
+	// adapter.
+	Identifiers []Identifier
+	// Links shall contain links to resources that are related to but are not contained by, or subordinate to, this
+	// resource.
+	Links string
+	// Location shall contain location information of the controller associated with the network adapter.
+	Location string
+	// PCIeInterface shall contain details for the PCIe interface that connects this PCIe-based controller to its host.
+	PCIeInterface string
 }
 
 // UnmarshalJSON unmarshals a Controllers object from the raw JSON.
 func (controllers *Controllers) UnmarshalJSON(b []byte) error {
 	type temp Controllers
-	type links struct {
-		NetworkPorts                common.Links
-		NetworkPortsCount           int `json:"EthernetInterfaces@odata.count"`
-		NetworkDeviceFunctions      common.Links
-		NetworkDeviceFunctionsCount int `json:"NetworkDeviceFunctions@odata.count"`
-		PCIeDevice                  common.Link
-		PCIeDevicesCount            int `json:"PCIeDevices@odata.count"`
-	}
-
 	var t struct {
 		temp
-		Links links
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -131,94 +122,133 @@ func (controllers *Controllers) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Extract the links to other entities for later
 	*controllers = Controllers(t.temp)
-	controllers.networkPorts = t.Links.NetworkPorts.ToStrings()
-	controllers.NetworkPortsCount = t.Links.NetworkPortsCount
-	controllers.networkDeviceFunctions = t.Links.NetworkDeviceFunctions.ToStrings()
-	controllers.NetworkDeviceFunctionsCount = t.Links.NetworkDeviceFunctionsCount
-	controllers.pcieDevices = t.Links.NetworkDeviceFunctions.ToStrings()
-	controllers.PCIeDevicesCount = t.Links.NetworkDeviceFunctionsCount
+
+	// Extract the links to other entities for later
 
 	return nil
 }
 
-// DataCenterBridging shall describe the capability, status,
-// and configuration values related to Data Center Bridging (DCB) for a
-// controller.
+// DataCenterBridging shall describe the capability, status, and configuration values related to data center
+// bridging (DCB) for a controller.
 type DataCenterBridging struct {
-	// Capable shall be a boolean indicating whether this controller is capable
-	// of Data Center Bridging (DCB).
+	// Capable shall indicate whether this controller is capable of data center bridging (DCB).
 	Capable bool
 }
 
-// NPIV shall contain N_Port ID Virtualization (NPIV) capabilities for a
-// controller.
-type NPIV struct {
+// UnmarshalJSON unmarshals a DataCenterBridging object from the raw JSON.
+func (datacenterbridging *DataCenterBridging) UnmarshalJSON(b []byte) error {
+	type temp DataCenterBridging
+	var t struct {
+		temp
+	}
 
-	// MaxDeviceLogins shall be the maximum number of N_Port ID Virtualization
-	// (NPIV) logins allowed simultaneously from all ports on this controller.
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*datacenterbridging = DataCenterBridging(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// NPIV shall contain N_Port ID Virtualization (NPIV) capabilities for a controller.
+type NPIV struct {
+	// MaxDeviceLogins shall contain the maximum number of N_Port ID Virtualization (NPIV) logins allowed
+	// simultaneously from all ports on this controller.
 	MaxDeviceLogins int
-	// MaxPortLogins shall be the maximum number of N_Port ID Virtualization
-	// (NPIV) logins allowed per physical port on this controller.
+	// MaxPortLogins shall contain the maximum number of N_Port ID Virtualization (NPIV) logins allowed per physical
+	// port on this controller.
 	MaxPortLogins int
 }
 
-// A NetworkAdapter represents the physical network adapter capable of
-// connecting to a computer network. Examples include but are not limited to
-// Ethernet, Fibre Channel, and converged network adapters.
+// UnmarshalJSON unmarshals a NPIV object from the raw JSON.
+func (npiv *NPIV) UnmarshalJSON(b []byte) error {
+	type temp NPIV
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*npiv = NPIV(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// NetworkAdapter shall represent a physical network adapter capable of connecting to a computer network in a
+// Redfish implementation.
 type NetworkAdapter struct {
 	common.Entity
-
 	// ODataContext is the odata context.
 	ODataContext string `json:"@odata.context"`
+	// ODataEtag is the odata etag.
+	ODataEtag string `json:"@odata.etag"`
 	// ODataType is the odata type.
 	ODataType string `json:"@odata.type"`
-	// Assembly shall be a link to a resource of type Assembly.
-	assembly string
-	// Controllers shall contain the set of network controllers ASICs that make
-	// up this NetworkAdapter.
+	// Actions shall contain the available actions for this resource.
+	Actions string
+	// Assembly shall contain a link to a resource of type Assembly.
+	Assembly string
+	// Certificates shall contain a link to a resource collection of type CertificateCollection that contains
+	// certificates for device identity and attestation.
+	Certificates string
+	// Controllers shall contain the set of network controllers ASICs that make up this network adapter.
 	Controllers []Controllers
 	// Description provides a description of this resource.
 	Description string
-	// Manufacturer shall contain a value that represents the manufacturer of
-	// the network adapter.
+	// EnvironmentMetrics shall contain a link to a resource of type EnvironmentMetrics that specifies the environment
+	// metrics for this network adapter.
+	EnvironmentMetrics string
+	// Identifiers shall contain a list of all known durable names for the network adapter.
+	Identifiers []Identifier
+	// LLDPEnabled shall contain the state indicating whether LLDP is globally enabled on a network adapter. If set to
+	// 'false', the LLDPEnabled value for the ports associated with this adapter shall be disregarded.
+	LLDPEnabled string
+	// Location shall contain location information of the network adapter.
+	Location string
+	// Manufacturer shall contain a value that represents the manufacturer of the network adapter.
 	Manufacturer string
-	// Model shall contain the information about how the manufacturer references
-	// this network adapter.
+	// Metrics shall contain a link to a resource of type NetworkAdapterMetrics that contains the metrics associated
+	// with this adapter.
+	Metrics NetworkAdapterMetrics
+	// Model shall contain the information about how the manufacturer refers to this network adapter.
 	Model string
-	// NetworkDeviceFunctions shall be a link to a collection of type
-	// NetworkDeviceFunctionCollection.
-	networkDeviceFunctions string
-	// NetworkPorts shall be a link to a collection of type NetworkPortCollection.
-	networkPorts string
-	// PartNumber shall contain the part number for the network adapter as
-	// defined by the manufacturer.
+	// NetworkDeviceFunctions shall contain a link to a resource collection of type NetworkDeviceFunctionCollection.
+	NetworkDeviceFunctions string
+	// Oem shall contain the OEM extensions. All values for properties that this object contains shall conform to the
+	// Redfish Specification-described requirements.
+	OEM json.RawMessage `json:"Oem"`
+	// PartNumber shall contain the part number for the network adapter as defined by the manufacturer.
 	PartNumber string
-	// SKU shall contain the Stock Keeping Unit (SKU) for the network adapter.
+	// Ports shall contain a link to a resource collection of type PortCollection.
+	Ports string
+	// Processors shall contain a link to a resource collection of type ProcessorCollection that represent the offload
+	// processors contained in this network adapter.
+	Processors string
+	// SKU shall contain the SKU for the network adapter.
 	SKU string
 	// SerialNumber shall contain the serial number for the network adapter.
 	SerialNumber string
 	// Status shall contain any status or health properties of the resource.
 	Status common.Status
-	// resetSettingsToDefaultTarget is the URL for sending a ResetSettingsToDefault action
-	resetSettingsToDefaultTarget string
+	// rawData holds the original serialized JSON so we can compare updates.
+	rawData []byte
 }
 
 // UnmarshalJSON unmarshals a NetworkAdapter object from the raw JSON.
 func (networkadapter *NetworkAdapter) UnmarshalJSON(b []byte) error {
 	type temp NetworkAdapter
-	type actions struct {
-		ResetSettingsToDefault struct {
-			Target string
-		} `json:"#NetworkAdapter.ResetSettingsToDefault"`
-	}
 	var t struct {
 		temp
-		Assembly               common.Link
-		NetworkDeviceFunctions common.Link
-		NetworkPorts           common.Link
-		Actions                actions
 	}
 
 	err := json.Unmarshal(b, &t)
@@ -226,17 +256,35 @@ func (networkadapter *NetworkAdapter) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	// Extract the links to other entities for later
 	*networkadapter = NetworkAdapter(t.temp)
-	networkadapter.assembly = string(t.Assembly)
-	networkadapter.networkDeviceFunctions = string(t.NetworkDeviceFunctions)
-	networkadapter.networkPorts = string(t.NetworkPorts)
-	networkadapter.resetSettingsToDefaultTarget = t.Actions.ResetSettingsToDefault.Target
+
+	// Extract the links to other entities for later
+
+	// This is a read/write object, so we need to save the raw object data for later
+	networkadapter.rawData = b
 
 	return nil
 }
 
-// GetNetworkAdapter will get a NetworkAdapter instance from the Redfish service.
+// Update commits updates to this object's properties to the running system.
+func (networkadapter *NetworkAdapter) Update() error {
+
+	// Get a representation of the object's original state so we can find what
+	// to update.
+	original := new(NetworkAdapter)
+	original.UnmarshalJSON(networkadapter.rawData)
+
+	readWriteFields := []string{
+		"LLDPEnabled",
+	}
+
+	originalElement := reflect.ValueOf(original).Elem()
+	currentElement := reflect.ValueOf(networkadapter).Elem()
+
+	return networkadapter.Entity.Update(originalElement, currentElement, readWriteFields)
+}
+
+// GetNetworkAdapter will get a NetworkAdapter instance from the service.
 func GetNetworkAdapter(c common.Client, uri string) (*NetworkAdapter, error) {
 	resp, err := c.Get(uri)
 	if err != nil {
@@ -244,65 +292,179 @@ func GetNetworkAdapter(c common.Client, uri string) (*NetworkAdapter, error) {
 	}
 	defer resp.Body.Close()
 
-	var networkAdapter NetworkAdapter
-	err = json.NewDecoder(resp.Body).Decode(&networkAdapter)
+	var networkadapter NetworkAdapter
+	err = json.NewDecoder(resp.Body).Decode(&networkadapter)
 	if err != nil {
 		return nil, err
 	}
 
-	networkAdapter.SetClient(c)
-	return &networkAdapter, nil
+	networkadapter.SetClient(c)
+	return &networkadapter, nil
 }
 
-// ListReferencedNetworkAdapter gets the collection of Chassis from a provided reference.
-func ListReferencedNetworkAdapter(c common.Client, link string) ([]*NetworkAdapter, error) {
+// ListReferencedNetworkAdapters gets the collection of NetworkAdapter from
+// a provided reference.
+func ListReferencedNetworkAdapters(c common.Client, link string) ([]*NetworkAdapter, error) {
 	var result []*NetworkAdapter
+	if link == "" {
+		return result, nil
+	}
+
 	links, err := common.GetCollection(c, link)
 	if err != nil {
 		return result, err
 	}
 
 	collectionError := common.NewCollectionError()
-	for _, networkAdapterLink := range links.ItemLinks {
-		networkAdapter, err := GetNetworkAdapter(c, networkAdapterLink)
+	for _, networkadapterLink := range links.ItemLinks {
+		networkadapter, err := GetNetworkAdapter(c, networkadapterLink)
 		if err != nil {
-			collectionError.Failures[networkAdapterLink] = err
+			collectionError.Failures[networkadapterLink] = err
 		} else {
-			result = append(result, networkAdapter)
+			result = append(result, networkadapter)
 		}
 	}
 
 	if collectionError.Empty() {
 		return result, nil
+	} else {
+		return result, collectionError
+	}
+}
+
+// NicPartitioning shall contain the capability, status, and configuration values for a controller.
+type NicPartitioning struct {
+	// NparCapable shall indicate whether the controller supports NIC function partitioning.
+	NparCapable bool
+	// NparEnabled shall indicate whether NIC function partitioning is active on this controller.
+	NparEnabled bool
+}
+
+// UnmarshalJSON unmarshals a NicPartitioning object from the raw JSON.
+func (nicpartitioning *NicPartitioning) UnmarshalJSON(b []byte) error {
+	type temp NicPartitioning
+	var t struct {
+		temp
 	}
 
-	return result, collectionError
-}
-
-// Assembly gets this adapter's assembly.
-func (networkadapter *NetworkAdapter) Assembly() (*Assembly, error) {
-	if networkadapter.assembly == "" {
-		return nil, nil
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
 	}
-	return GetAssembly(networkadapter.Client, networkadapter.assembly)
+
+	*nicpartitioning = NicPartitioning(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
 
-// NetworkDeviceFunctions gets the collection of NetworkDeviceFunctions of this network adapter
-func (networkadapter *NetworkAdapter) NetworkDeviceFunctions() ([]*NetworkDeviceFunction, error) {
-	return ListReferencedNetworkDeviceFunctions(networkadapter.Client, networkadapter.networkDeviceFunctions)
+// OemActions shall contain the available OEM-specific actions for this resource.
+type OemActions struct {
 }
 
-// NetworkPorts gets the collection of NetworkPorts for this network adapter
-func (networkadapter *NetworkAdapter) NetworkPorts() ([]*NetworkPort, error) {
-	return ListReferencedNetworkPorts(networkadapter.Client, networkadapter.networkPorts)
-}
-
-// ResetSettingsToDefault shall perform a reset of all active and pending
-// settings back to factory default settings upon reset of the network adapter.
-func (networkadapter *NetworkAdapter) ResetSettingsToDefault() error {
-	resp, err := networkadapter.Client.Post(networkadapter.resetSettingsToDefaultTarget, nil)
-	if err == nil {
-		defer resp.Body.Close()
+// UnmarshalJSON unmarshals a OemActions object from the raw JSON.
+func (oemactions *OemActions) UnmarshalJSON(b []byte) error {
+	type temp OemActions
+	var t struct {
+		temp
 	}
-	return err
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*oemactions = OemActions(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// SRIOV shall contain single-root input/output virtualization (SR-IOV) capabilities.
+type SRIOV struct {
+	// SRIOVVEPACapable shall indicate whether this controller supports single root input/output virtualization (SR-
+	// IOV) in Virtual Ethernet Port Aggregator (VEPA) mode.
+	SRIOVVEPACapable bool
+}
+
+// UnmarshalJSON unmarshals a SRIOV object from the raw JSON.
+func (sriov *SRIOV) UnmarshalJSON(b []byte) error {
+	type temp SRIOV
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*sriov = SRIOV(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// VirtualFunction shall describe the capability, status, and configuration values related to a virtual function
+// for a controller.
+type VirtualFunction struct {
+	// DeviceMaxCount shall contain the maximum number of virtual functions supported by this controller.
+	DeviceMaxCount int
+	// MinAssignmentGroupSize shall contain the minimum number of virtual functions that can be allocated or moved
+	// between physical functions for this controller.
+	MinAssignmentGroupSize int
+	// NetworkPortMaxCount shall contain the maximum number of virtual functions supported per network port for this
+	// controller.
+	NetworkPortMaxCount int
+}
+
+// UnmarshalJSON unmarshals a VirtualFunction object from the raw JSON.
+func (virtualfunction *VirtualFunction) UnmarshalJSON(b []byte) error {
+	type temp VirtualFunction
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*virtualfunction = VirtualFunction(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
+}
+
+// VirtualizationOffload shall describe the capability, status, and configuration values related to a
+// virtualization offload for a controller.
+type VirtualizationOffload struct {
+	// SRIOV shall contain single-root input/output virtualization (SR-IOV) capabilities.
+	SRIOV string
+	// VirtualFunction shall describe the capability, status, and configuration values related to the virtual function
+	// for this controller.
+	VirtualFunction string
+}
+
+// UnmarshalJSON unmarshals a VirtualizationOffload object from the raw JSON.
+func (virtualizationoffload *VirtualizationOffload) UnmarshalJSON(b []byte) error {
+	type temp VirtualizationOffload
+	var t struct {
+		temp
+	}
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	*virtualizationoffload = VirtualizationOffload(t.temp)
+
+	// Extract the links to other entities for later
+
+	return nil
 }
